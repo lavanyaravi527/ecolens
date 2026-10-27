@@ -1,0 +1,2590 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#138052">
+<title>EcoLens — Green Code Analyzer</title>
+
+<script>
+(function () {
+  var t;
+  try { t = localStorage.getItem("eco-theme"); } catch (e) {}
+  if (t !== "dark" && t !== "light") {
+    t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  document.documentElement.setAttribute("data-theme", t);
+})();
+</script>
+<style id="cm-base">.CodeMirror{font-family: monospace;height: 300px;color: black;direction: ltr;}.CodeMirror-lines{padding: 4px 0;}.CodeMirror pre.CodeMirror-line,.CodeMirror pre.CodeMirror-line-like{padding: 0 4px;}.CodeMirror-scrollbar-filler,.CodeMirror-gutter-filler{background-color: white;}.CodeMirror-gutters{border-right: 1px solid #ddd;background-color: #f7f7f7;white-space: nowrap;}.CodeMirror-linenumbers{}.CodeMirror-linenumber{padding: 0 3px 0 5px;min-width: 20px;text-align: right;color: #999;white-space: nowrap;}.CodeMirror-guttermarker{color: black;}.CodeMirror-guttermarker-subtle{color: #999;}.CodeMirror-cursor{border-left: 1px solid black;border-right: none;width: 0;}.CodeMirror div.CodeMirror-secondarycursor{border-left: 1px solid silver;}.cm-fat-cursor .CodeMirror-cursor{width: auto;border: 0 !important;background: #7e7;}.cm-fat-cursor div.CodeMirror-cursors{z-index: 1;}.cm-fat-cursor .CodeMirror-line::selection,.cm-fat-cursor .CodeMirror-line>span::selection,.cm-fat-cursor .CodeMirror-line>span>span::selection{background: transparent;}.cm-fat-cursor .CodeMirror-line::-moz-selection,.cm-fat-cursor .CodeMirror-line>span::-moz-selection,.cm-fat-cursor .CodeMirror-line>span>span::-moz-selection{background: transparent;}.cm-fat-cursor{caret-color: transparent;}@-moz-keyframes blink{0%{}50%{background-color: transparent;}100%{}}@-webkit-keyframes blink{0%{}50%{background-color: transparent;}100%{}}@keyframes blink{0%{}50%{background-color: transparent;}100%{}}.CodeMirror-overwrite .CodeMirror-cursor{}.cm-tab{display: inline-block;text-decoration: inherit;}.CodeMirror-rulers{position: absolute;left: 0;right: 0;top: -50px;bottom: 0;overflow: hidden;}.CodeMirror-ruler{border-left: 1px solid #ccc;top: 0;bottom: 0;position: absolute;}.cm-s-default .cm-header{color: blue;}.cm-s-default .cm-quote{color: #090;}.cm-negative{color: #d44;}.cm-positive{color: #292;}.cm-header,.cm-strong{font-weight: bold;}.cm-em{font-style: italic;}.cm-link{text-decoration: underline;}.cm-strikethrough{text-decoration: line-through;}.cm-s-default .cm-keyword{color: #708;}.cm-s-default .cm-atom{color: #219;}.cm-s-default .cm-number{color: #164;}.cm-s-default .cm-def{color: #00f;}.cm-s-default .cm-variable,.cm-s-default .cm-punctuation,.cm-s-default .cm-property,.cm-s-default .cm-operator{}.cm-s-default .cm-variable-2{color: #05a;}.cm-s-default .cm-variable-3,.cm-s-default .cm-type{color: #085;}.cm-s-default .cm-comment{color: #a50;}.cm-s-default .cm-string{color: #a11;}.cm-s-default .cm-string-2{color: #f50;}.cm-s-default .cm-meta{color: #555;}.cm-s-default .cm-qualifier{color: #555;}.cm-s-default .cm-builtin{color: #30a;}.cm-s-default .cm-bracket{color: #997;}.cm-s-default .cm-tag{color: #170;}.cm-s-default .cm-attribute{color: #00c;}.cm-s-default .cm-hr{color: #999;}.cm-s-default .cm-link{color: #00c;}.cm-s-default .cm-error{color: #f00;}.cm-invalidchar{color: #f00;}.CodeMirror-composing{border-bottom: 2px solid;}div.CodeMirror span.CodeMirror-matchingbracket{color: #0b0;}div.CodeMirror span.CodeMirror-nonmatchingbracket{color: #a22;}.CodeMirror-matchingtag{background: rgba(255,150,0,.3);}.CodeMirror-activeline-background{background: #e8f2ff;}.CodeMirror{position: relative;overflow: hidden;background: white;}.CodeMirror-scroll{overflow: scroll !important;margin-bottom: -50px;margin-right: -50px;padding-bottom: 50px;height: 100%;outline: none;position: relative;z-index: 0;}.CodeMirror-sizer{position: relative;border-right: 50px solid transparent;}.CodeMirror-vscrollbar,.CodeMirror-hscrollbar,.CodeMirror-scrollbar-filler,.CodeMirror-gutter-filler{position: absolute;z-index: 6;display: none;outline: none;}.CodeMirror-vscrollbar{right: 0;top: 0;overflow-x: hidden;overflow-y: scroll;}.CodeMirror-hscrollbar{bottom: 0;left: 0;overflow-y: hidden;overflow-x: scroll;}.CodeMirror-scrollbar-filler{right: 0;bottom: 0;}.CodeMirror-gutter-filler{left: 0;bottom: 0;}.CodeMirror-gutters{position: absolute;left: 0;top: 0;min-height: 100%;z-index: 3;}.CodeMirror-gutter{white-space: normal;height: 100%;display: inline-block;vertical-align: top;margin-bottom: -50px;}.CodeMirror-gutter-wrapper{position: absolute;z-index: 4;background: none !important;border: none !important;}.CodeMirror-gutter-background{position: absolute;top: 0;bottom: 0;z-index: 4;}.CodeMirror-gutter-elt{position: absolute;cursor: default;z-index: 4;}.CodeMirror-gutter-wrapper ::selection{background-color: transparent}.CodeMirror-gutter-wrapper ::-moz-selection{background-color: transparent}.CodeMirror-lines{cursor: text;min-height: 1px;}.CodeMirror pre.CodeMirror-line,.CodeMirror pre.CodeMirror-line-like{-moz-border-radius: 0;-webkit-border-radius: 0;border-radius: 0;border-width: 0;background: transparent;font-family: inherit;font-size: inherit;margin: 0;white-space: pre;word-wrap: normal;line-height: inherit;color: inherit;z-index: 2;position: relative;overflow: visible;-webkit-tap-highlight-color: transparent;-webkit-font-variant-ligatures: contextual;font-variant-ligatures: contextual;}.CodeMirror-wrap pre.CodeMirror-line,.CodeMirror-wrap pre.CodeMirror-line-like{word-wrap: break-word;white-space: pre-wrap;word-break: normal;}.CodeMirror-linebackground{position: absolute;left: 0;right: 0;top: 0;bottom: 0;z-index: 0;}.CodeMirror-linewidget{position: relative;z-index: 2;padding: 0.1px;}.CodeMirror-widget{}.CodeMirror-rtl pre{direction: rtl;}.CodeMirror-code{outline: none;}.CodeMirror-scroll,.CodeMirror-sizer,.CodeMirror-gutter,.CodeMirror-gutters,.CodeMirror-linenumber{-moz-box-sizing: content-box;box-sizing: content-box;}.CodeMirror-measure{position: absolute;width: 100%;height: 0;overflow: hidden;visibility: hidden;}.CodeMirror-cursor{position: absolute;pointer-events: none;}.CodeMirror-measure pre{position: static;}div.CodeMirror-cursors{visibility: hidden;position: relative;z-index: 3;}div.CodeMirror-dragcursors{visibility: visible;}.CodeMirror-focused div.CodeMirror-cursors{visibility: visible;}.CodeMirror-selected{background: #d9d9d9;}.CodeMirror-focused .CodeMirror-selected{background: #d7d4f0;}.CodeMirror-crosshair{cursor: crosshair;}.CodeMirror-line::selection,.CodeMirror-line>span::selection,.CodeMirror-line>span>span::selection{background: #d7d4f0;}.CodeMirror-line::-moz-selection,.CodeMirror-line>span::-moz-selection,.CodeMirror-line>span>span::-moz-selection{background: #d7d4f0;}.cm-searching{background-color: #ffa;background-color: rgba(255,255,0,.4);}.cm-force-border{padding-right: .1px;}@media print{.CodeMirror div.CodeMirror-cursors{visibility: hidden;}}.cm-tab-wrap-hack:after{content: '';}span.CodeMirror-selectedtext{background: none;}</style>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f3f7f4;
+  --card: #ffffff;
+  --tx: #172820;
+  --mu: #68796f;
+  --bd: #dce8df;
+  --ac: #138052;
+  --ac-h: #09613d;
+  --on-ac: #ffffff;
+  --hot: #d95736;
+  --code: #14251e;
+  --ct: #dcefe4;
+  --mint: #e4f6eb;
+  --shadow: 0 8px 28px rgba(26,70,45,.055);
+  --c1: #138052; --c2: #d95736; --c3: #c99a1c; --c4: #4a78c9;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #08131f;
+  --card: #0f2034;
+  --tx: #e8f3f6;
+  --mu: #8fa9ba;
+  --bd: #1d3550;
+  --ac: #2dd4bf;
+  --ac-h: #5eead4;
+  --on-ac: #04211d;
+  --hot: #ff9a76;
+  --code: #050e19;
+  --ct: #d3ece8;
+  --mint: #11344a;
+  --shadow: 0 8px 28px rgba(0,0,0,.28);
+  --c1: #2dd4bf; --c2: #ff9a76; --c3: #f2c94c; --c4: #7aa2f7;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at top left, var(--mint), transparent 42%),
+    var(--bg);
+  color: var(--tx);
+  font: 15px/1.65 Inter, system-ui, -apple-system,
+        "Segoe UI", sans-serif;
+}
+
+main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 22px 56px;
+}
+
+header { margin-bottom: 25px; }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: var(--ac);
+  color: var(--on-ac);
+  font-size: 25px;
+  box-shadow: var(--shadow);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 43px);
+  line-height: 1.2;
+  letter-spacing: -1.5px;
+  font-weight: 800;
+}
+
+.brand-sub {
+  margin: 3px 0 0;
+  color: var(--mu);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.intro {
+  max-width: 680px;
+  margin: 17px 0 22px;
+  color: var(--mu);
+  font-size: 16px;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--mu);
+  padding: 6px 11px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+
+h2, h3 { margin: 0; }
+
+h2 {
+  font-size: 19px;
+  letter-spacing: -.5px;
+}
+
+h3 {
+  margin-bottom: 14px;
+  font-size: 16px;
+  letter-spacing: -.3px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.section-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: var(--mint);
+  font-size: 18px;
+}
+
+.muted {
+  color: var(--mu);
+  font-size: 13px;
+  margin: 4px 0 17px;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  height: 340px;
+  resize: vertical;
+  background: var(--code);
+  color: var(--ct);
+  border: 1px solid var(--bd);
+  border-radius: 13px;
+  padding: 18px;
+  font: 13px/1.8 "SFMono-Regular", Consolas,
+        "Liberation Mono", monospace;
+  tab-size: 2;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+textarea:focus {
+  border-color: var(--ac);
+  box-shadow: 0 0 0 3px var(--mint);
+}
+
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+button {
+  background: var(--card);
+  color: var(--tx);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  transition: transform .18s, background .18s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  background: var(--mint);
+}
+
+button:focus-visible {
+  outline: 3px solid var(--ac);
+  outline-offset: 3px;
+}
+
+.primary {
+  background: var(--ac);
+  color: var(--on-ac);
+  border-color: var(--ac);
+}
+
+.primary:hover {
+  background: var(--ac-h);
+  color: var(--on-ac);
+}
+
+.secondary {
+  border-color: var(--ac);
+  color: var(--ac);
+}
+
+.editor-note {
+  margin: 15px 0 0;
+  color: var(--mu);
+  font-size: 12px;
+}
+
+.k {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 13px;
+}
+
+.k > div {
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  padding: 17px;
+  background: var(--bg);
+  min-width: 0;
+}
+
+.k .g { background: var(--mint); }
+
+.k span {
+  display: block;
+  color: var(--mu);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.k b {
+  display: block;
+  margin-top: 8px;
+  font-size: clamp(21px, 3vw, 28px);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  letter-spacing: -.7px;
+}
+
+.g b, .sg b { color: var(--ac); }
+
+.map {
+  font: 12px/1.8 "SFMono-Regular", Consolas, monospace;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+.r {
+  display: grid;
+  grid-template-columns: 28px 100px 78px minmax(260px, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-width: 610px;
+  padding: 7px 9px;
+  border-radius: 6px;
+}
+
+.r:nth-child(even) { background: var(--bg); }
+
+.r i {
+  display: block;
+  height: 8px;
+  min-width: 3px;
+  background: var(--ac);
+  border-radius: 8px;
+}
+
+.r.h {
+  color: var(--hot);
+  font-weight: 700;
+  background: color-mix(in srgb, var(--hot) 8%, var(--card));
+}
+
+.r.h i { background: var(--hot); }
+.r.z { color: var(--mu); }
+
+.sg {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--bd);
+  overflow-wrap: anywhere;
+}
+
+.sg:last-child { border: 0; padding-bottom: 0; }
+
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+  border: 1px solid var(--bd);
+  background: var(--mint);
+  border-radius: 6px;
+  padding: 3px 7px;
+  color: var(--ac);
+  margin-right: 7px;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 150px;
+  max-width: 100%;
+  padding: 9px 11px;
+  background: var(--bg);
+  color: var(--tx);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.impact {
+  background: var(--mint);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 17px;
+  line-height: 2.1;
+}
+
+.impact b { color: var(--ac); }
+
+.err {
+  color: var(--hot);
+  font-family: monospace;
+  overflow-wrap: anywhere;
+}
+
+.footer {
+  text-align: center;
+  color: var(--mu);
+  font-size: 12px;
+  padding: 12px;
+}
+
+/* ---------- Editor (CodeMirror) ---------- */
+:root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+
+.CodeMirror {
+  height: 340px;
+  resize: vertical;
+  background: var(--code);
+  color: var(--ct);
+  border: 1px solid var(--bd);
+  border-radius: 13px;
+  font: 13px/1.8 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  transition: border-color .2s, box-shadow .2s;
+}
+.CodeMirror-focused { border-color: var(--ac); box-shadow: 0 0 0 3px var(--mint); }
+.CodeMirror-lines { padding: 12px 0; }
+.CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like { padding: 0 12px; }
+.CodeMirror-gutters {
+  background: color-mix(in srgb, var(--ct) 5%, var(--code));
+  border-right: 1px solid var(--bd);
+}
+.CodeMirror-linenumber { color: #6f8a7c; padding: 0 10px 0 8px; }
+.CodeMirror-cursor { border-left: 2px solid var(--ct); }
+.CodeMirror .CodeMirror-selected,
+.CodeMirror-focused .CodeMirror-selected { background: rgba(45, 212, 191, .28); }
+
+.cm-s-eco .cm-keyword { color: #7ee0b0; font-weight: 600; }
+.cm-s-eco .cm-number { color: #f2c94c; }
+.cm-s-eco .cm-comment { color: #6f8a7c; font-style: italic; }
+.cm-s-eco .cm-meta { color: #ff9a76; }
+.cm-s-eco .cm-def { color: #c4b5fd; }
+.cm-s-eco .cm-operator { color: #9ec5ff; }
+.cm-s-eco .cm-builtin { color: #ffd27a; }
+
+.CodeMirror .cm-hot { background: color-mix(in srgb, var(--hot) 17%, transparent); }
+.cm-hot-gutter .CodeMirror-linenumber { color: var(--hot); font-weight: 800; }
+.CodeMirror .cm-err { background: rgba(255, 90, 74, .22); }
+.cm-err-gutter .CodeMirror-linenumber { color: #ff8a7a; font-weight: 800; }
+.CodeMirror .cm-flash { animation: flashln 2s ease-out; }
+@keyframes flashln { 0%, 35% { background: color-mix(in srgb, var(--ac) 42%, transparent); } }
+.eco-errline {
+  padding: 4px 12px 6px; margin-bottom: 2px;
+  color: #ffb4a8; background: rgba(255, 90, 74, .14);
+  border-left: 3px solid #ff5a4a;
+  font: 12px/1.5 "SFMono-Regular", Consolas, monospace;
+  white-space: normal; overflow-wrap: anywhere;
+}
+
+/* Click-to-jump targets */
+.r[data-line] { cursor: pointer; }
+.r[data-line]:hover { outline: 1px solid var(--ac); outline-offset: -1px; }
+.r[data-line]:focus-visible, .jump:focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; }
+.jump { cursor: pointer; border-radius: 6px; }
+.jump:hover { background: var(--mint); }
+.jump strong { text-decoration: underline dotted; text-underline-offset: 3px; }
+
+/* ---------- Theme toggle ---------- */
+.theme-toggle {
+  margin-left: auto;
+  align-self: flex-start;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 19px;
+  line-height: 1;
+}
+
+/* ---------- Hero KPI ---------- */
+.hero {
+  border: 1px solid var(--ac);
+  border-radius: 18px;
+  padding: 24px 26px;
+  margin-bottom: 13px;
+  background: linear-gradient(135deg, var(--mint), var(--card));
+}
+
+.hero span {
+  display: block;
+  color: var(--mu);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.hero b {
+  display: block;
+  margin-top: 4px;
+  color: var(--ac);
+  font-size: clamp(40px, 9vw, 68px);
+  line-height: 1.1;
+  letter-spacing: -2px;
+  overflow-wrap: anywhere;
+}
+
+.k.small b { font-size: clamp(18px, 2.4vw, 22px); margin-top: 6px; }
+.k.small > div { padding: 14px; }
+
+/* ---------- Budget progress bar ---------- */
+.track {
+  height: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  background: var(--bd);
+  overflow: hidden;
+}
+
+.track i {
+  display: block;
+  height: 100%;
+  border-radius: 10px;
+  background: var(--ac);
+}
+
+.track.over i { background: var(--hot); }
+.k .budget-note { margin-top: 7px; font-size: 12px; font-weight: 700; color: var(--ac); }
+.k .over-note { color: var(--hot); }
+
+/* ---------- Before / after ---------- */
+.ba { margin-top: 18px; }
+.ba-row {
+  display: grid;
+  grid-template-columns: 70px 1fr 92px;
+  gap: 12px;
+  align-items: center;
+  margin-top: 9px;
+  font-size: 13px;
+}
+
+.ba-row .lbl { color: var(--mu); font-weight: 650; }
+.ba-row .val { text-align: right; font-weight: 750; }
+.ba-bar { height: 16px; border-radius: 8px; background: var(--bd); overflow: hidden; }
+.ba-bar i { display: block; height: 100%; border-radius: 8px; min-width: 3px; }
+.ba-bar .now { background: var(--hot); }
+.ba-bar .aft { background: var(--ac); }
+
+/* ---------- Suggestions ---------- */
+button:disabled { opacity: .45; cursor: default; transform: none; background: var(--card); }
+.chips, .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chip { padding: 5px 12px; border-radius: 30px; font-size: 12px; text-transform: capitalize; }
+.chip[aria-pressed="true"] { background: var(--ac); color: var(--on-ac); border-color: var(--ac); }
+.chip.sortb { margin-left: auto; text-transform: none; }
+.sg-head { display: flex; gap: 14px; align-items: flex-start; justify-content: space-between; }
+.sg-head > div { min-width: 0; }
+.apply { flex-shrink: 0; padding: 6px 13px; font-size: 13px; border-color: var(--ac); color: var(--ac); }
+pre.d {
+  margin: 8px 0 0; padding: 8px 12px; overflow-x: auto; white-space: pre;
+  border-radius: 8px; border-left: 3px solid; color: var(--tx);
+  font: 12px/1.7 "SFMono-Regular", Consolas, monospace;
+}
+pre.del { border-color: var(--hot); background: color-mix(in srgb, var(--hot) 12%, var(--card)); }
+pre.add { border-color: var(--ac); background: color-mix(in srgb, var(--ac) 12%, var(--card)); }
+.hero b.flash { animation: pulse .5s; }
+@keyframes pulse { 50% { transform: scale(1.03); } }
+
+/* ---------- Breakdown ---------- */
+.break {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 28px;
+}
+
+.donut {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.donut > div {
+  width: 62%;
+  height: 62%;
+  border-radius: 50%;
+  background: var(--card);
+  display: grid;
+  place-content: center;
+  text-align: center;
+  line-height: 1.25;
+}
+
+.donut b { font-size: 18px; letter-spacing: -.5px; }
+.donut small { color: var(--mu); font-size: 11px; font-weight: 650; }
+
+.legend { flex: 1; min-width: 240px; }
+
+.lg-row {
+  display: grid;
+  grid-template-columns: 14px 1fr auto 52px;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--bd);
+  font-size: 14px;
+}
+
+.lg-row:last-child { border: 0; }
+.lg-row i { width: 12px; height: 12px; border-radius: 4px; }
+.lg-row .pc { text-align: right; color: var(--mu); font-weight: 700; }
+
+@media (max-width: 600px) {
+  main { padding: 22px 12px 36px; }
+  .card { padding: 15px; border-radius: 14px; }
+  textarea { height: 300px; padding: 12px; font-size: 12px; }
+  .CodeMirror { height: 300px; font-size: 12px; }
+  .k { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .k > div { padding: 12px; }
+  .k b { font-size: 20px; }
+  .hero { padding: 18px; }
+  .ba-row { grid-template-columns: 56px 1fr 78px; gap: 8px; }
+  .donut { margin: 0 auto; }
+  .r { grid-template-columns: 25px 70px 65px minmax(260px, 1fr); gap: 7px; }
+  .editor-toolbar { align-items: flex-start; }
+}
+
+/* Review-ready analysis panels */
+.eco-extra-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.eco-mini{border:1px solid var(--bd);border-radius:12px;padding:14px;background:var(--panel,transparent)}
+.eco-mini h3{margin:0 0 8px;font-size:15px}
+.eco-muted{color:var(--mu);font-size:13px;line-height:1.55}
+.eco-weight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.eco-weight-grid label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--mu)}
+.eco-weight-grid input{width:100%;min-width:0;border:1px solid var(--bd);border-radius:8px;padding:9px;background:var(--bg);color:var(--tx)}
+.eco-line-cost{display:grid;grid-template-columns:48px minmax(0,1fr) 110px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}
+.eco-line-cost:last-child{border-bottom:0}
+.eco-line-cost button{border:0;background:transparent;color:var(--tx);text-align:left;cursor:pointer;overflow-wrap:anywhere}
+.eco-line-cost strong{text-align:right;font-variant-numeric:tabular-nums}
+.eco-track{height:7px;background:var(--bd);border-radius:99px;overflow:hidden;margin-top:5px}
+.eco-track i{display:block;height:100%;background:var(--accent,#138052);border-radius:99px}
+.eco-test-row{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--bd)}
+.eco-test-row:last-child{border-bottom:0}
+.eco-status{font-weight:800;min-width:52px}
+.eco-pass{color:#16845b}.eco-fail{color:#c74343}
+.eco-risk{display:inline-block;margin-left:8px;padding:2px 6px;border:1px solid var(--bd);border-radius:6px;font-size:10px;letter-spacing:.04em;color:var(--mu);font-weight:800}
+.eco-callout{padding:12px;border-radius:10px;background:var(--soft,rgba(19,128,82,.08));margin-top:10px;font-size:13px;line-height:1.5}
+@media(max-width:650px){.eco-extra-grid{grid-template-columns:1fr}.eco-weight-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.eco-line-cost{grid-template-columns:34px minmax(0,1fr) 82px}}
+
+
+/* Refined visual system: restrained developer-tool styling */
+:root {
+  --bg: #f5f6f3;
+  --card: #ffffff;
+  --tx: #202820;
+  --mu: #687168;
+  --bd: #d9ded6;
+  --ac: #356b4a;
+  --ac-h: #28543a;
+  --on-ac: #ffffff;
+  --hot: #b85a3e;
+  --code: #202722;
+  --ct: #e7eee8;
+  --mint: #edf1eb;
+  --shadow: 0 1px 2px rgba(25,35,25,.035);
+}
+:root[data-theme="dark"] {
+  --bg: #171b18;
+  --card: #202622;
+  --tx: #e7ebe6;
+  --mu: #a1aca1;
+  --bd: #39423b;
+  --ac: #8bb99a;
+  --ac-h: #a4c9ae;
+  --on-ac: #142018;
+  --hot: #e49a7d;
+  --code: #111612;
+  --ct: #e1e9e2;
+  --mint: #29342c;
+  --shadow: 0 1px 2px rgba(0,0,0,.18);
+}
+body { background: var(--bg); font-size: 14px; line-height: 1.55; }
+main { max-width: 1240px; padding: 28px 26px 48px; }
+header { margin-bottom: 28px; padding-bottom: 22px; border-bottom: 1px solid var(--bd); }
+.logo { width: 42px; height: 42px; border-radius: 8px; background: var(--ac); box-shadow: none; font-size: 13px; font-weight: 800; letter-spacing: -.5px; }
+h1 { font-size: clamp(27px, 4vw, 35px); letter-spacing: -1.1px; font-weight: 750; }
+.brand-sub { font-size: 11px; letter-spacing: 1.1px; }
+.intro { margin: 15px 0 17px; font-size: 14px; max-width: 760px; }
+.pills { gap: 7px; }
+.pill { border-radius: 5px; padding: 4px 8px; font-size: 11px; font-weight: 600; background: transparent; }
+.card { border-radius: 8px; padding: 20px; margin-bottom: 14px; box-shadow: none; }
+h2 { font-size: 17px; letter-spacing: -.2px; }
+h3 { font-size: 14px; letter-spacing: 0; }
+.section-heading { gap: 9px; margin-bottom: 6px; }
+.section-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--mint); font-size: 15px; }
+.muted { font-size: 12px; margin: 4px 0 14px; }
+button { border-radius: 6px; padding: 8px 12px; font-size: 12px; font-weight: 650; transition: background .15s, border-color .15s; }
+button:hover { transform: none; }
+.secondary { border-color: var(--bd); color: var(--tx); }
+.primary { background: var(--ac); }
+textarea { border-radius: 7px; padding: 15px; font-size: 12px; line-height: 1.7; }
+textarea:focus { box-shadow: 0 0 0 2px var(--mint); }
+.eco-mini { border-radius: 7px; padding: 13px; }
+.eco-weight-grid input { border-radius: 5px; }
+.eco-callout { border-radius: 6px; }
+.eco-track, .track, .ba-bar { border-radius: 3px; }
+@media(max-width:650px) { main { padding: 18px 12px 34px; } .card { padding: 15px; } }
+
+.eco-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+.eco-table th,.eco-table td{border-bottom:1px solid var(--bd);padding:7px 8px;text-align:left}
+.eco-table td.n{text-align:right;font-variant-numeric:tabular-nums}
+.eco-badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.03em;border:1px solid var(--bd)}
+.eco-badge.ok{background:rgba(19,128,82,.12);color:#138052}
+.eco-badge.warn{background:rgba(200,120,0,.14);color:#b36b00}
+.eco-bar{height:8px;border-radius:4px;background:var(--bd);overflow:hidden;margin-top:10px}
+.eco-bar i{display:block;height:100%;background:#138052;width:0;transition:width .4s}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.js"></script>
+</head>
+
+<body>
+<main>
+
+<header>
+  <div class="brand">
+    <div class="logo">EL</div>
+    <div>
+      <h1>EcoLens</h1>
+      <p class="brand-sub">Green Code Analyzer</p>
+    </div>
+    <button id="themeBtn" class="theme-toggle" type="button"
+      onclick="toggleTheme()" aria-label="Switch theme"></button>
+  </div>
+
+  <p class="intro">
+    Write smarter code. Use less energy. Discover expensive operations,
+    identify memory inefficiencies, and explore greener alternatives
+    with energy savings measured on your own machine.
+  </p>
+
+  <div class="pills">
+    <span class="pill">Static cost analysis</span>
+    <span class="pill">Optimization review</span>
+    <span class="pill" id="srcPill">Waiting for hardware profile…</span>
+  </div>
+</header>
+
+<section class="card">
+  <div class="section-heading">
+    <div class="section-icon">⌨️</div>
+    <div>
+      <h2>Code energy analyzer</h2>
+    </div>
+  </div>
+
+  <p class="muted">
+    Load an example or edit the code below. Results update automatically.
+  </p>
+
+  <textarea id="code" spellcheck="false"
+    aria-label="Source code editor"></textarea>
+
+  <div class="editor-toolbar">
+    <div class="button-group">
+      <button class="primary" onclick="ex('demo')">▶ Load Demo</button>
+      <button class="secondary" onclick="ex('stride')">↗ Load Stride</button>
+      <button class="secondary" onclick="runTestSuite()">✓ Run tests</button>
+      <button class="secondary" onclick="exportAnalysis()">⇩ Export JSON</button>
+      <button class="secondary" onclick="exportReviewReport()">▤ Review report</button>
+    </div>
+  </div>
+
+  <p class="editor-note">
+    Supported syntax: let · array(N) · for loops · arithmetic · return · @budget(60 uJ)
+    <br>Hot lines are tinted in the editor. Click a map row or suggestion to jump to its line. Run self-tests or export a JSON snapshot for your review.
+  </p>
+</section>
+
+<div id="out" aria-live="polite"></div>
+
+<footer class="footer">
+  EcoLens · Write efficient code for a greener digital world 🌍
+  <br><span id="footNote">Per-operation costs come from the EcoLens backend, measured on this machine. Totals are a static analysis of your code; use “Measure on hardware” for a real run.</span>
+</footer>
+
+<script>
+"use strict";
+
+/* ------------------------------------------------------------------
+   Cost model. There are NO built-in weights any more.
+   Every number comes from the backend's measured hardware profile
+   (GET /api/profile, produced by scripts/calibrate.py), in picojoules.
+------------------------------------------------------------------- */
+const API = (window.ECOLENS_API || "").replace(/\/$/, "");
+const M = {};            // weights_pj from the profile: alu, and, shift, mul, div, rem, mv, l1, loop, dram, fill
+const OC = {};           // operator -> cost, rebuilt by syncOperationCosts()
+let PROFILE = null, PROFILE_ERR = "", LAST_MEASURE = null;
+
+/* Extra energy (pJ) of one 4-byte access to an array of `bytes`, over an L1 hit.
+   Interpolated (log2 of size) on the memory curve measured by the backend. */
+function memPen(bytes, seq) {
+  const c = PROFILE.memory_curve, k = seq ? "seq_pj" : "rand_pj";
+  if (bytes <= c[0].bytes) return 0;
+  for (let i = 1; i < c.length; i++) {
+    if (bytes <= c[i].bytes) {
+      const a = Math.log2(c[i - 1].bytes), b = Math.log2(c[i].bytes);
+      const f = (Math.log2(bytes) - a) / (b - a);
+      return c[i - 1][k] + f * (c[i][k] - c[i - 1][k]);
+    }
+  }
+  return c[c.length - 1][k];
+}
+
+const J = JSON.stringify;
+
+const EX = {
+demo: `// Two loops over a 256 KB array
+@budget(60 uJ)
+fn main() {
+  let w = 3;
+  w = w + 4;
+  let a = array(65536);
+  let b = array(65536);
+  let s = 0;
+
+  for i in 0..65536 {
+    let k = w * 5 + 7;
+    a[i] = i * 8 + k;
+  }
+
+  for j in 0..65536 {
+    s = s + a[j] / 4 + a[j] % 8;
+    b[j] = a[j] * 10;
+  }
+
+  return s;
+}`,
+
+stride: `// Column walk: jumps around memory
+@budget(450 uJ)
+fn main() {
+  let a = array(262144);
+
+  for i in 0..262144 {
+    a[i] = i % 8;
+  }
+
+  let s = 0;
+
+  for r in 0..64 {
+    for c in 0..256 {
+      s = s + a[c * 1024 + r];
+    }
+  }
+
+  return s;
+}`
+};
+
+/* ---------- Lexer and parser ---------- */
+
+const lineErr = (msg, line) => Object.assign(Error(msg), { line });
+
+function parse(src) {
+  src = src.replace(/\/\/[^\n]*/g, "");
+
+  const T = [];
+  const re = /(\s*)(?:(\d+)|([A-Za-z_]\w*)|(\.\.|<<|>>|[-+*\/%=;{}()\[\],@&]))/y;
+
+  let p = 0;
+  let ln = 1;
+
+  while (!/^\s*$/.test(src.slice(p))) {
+    re.lastIndex = p;
+    const m = re.exec(src);
+
+    if (!m) {
+      ln += ((src.slice(p).match(/^\s*/)[0]).match(/\n/g) || []).length;
+      throw lineErr("Unexpected text near line " + ln, ln);
+    }
+
+    ln += (m[1].match(/\n/g) || []).length;
+    p = re.lastIndex;
+
+    const tokenLine = ln;
+
+    T.push(
+      m[2] ? ["n", +m[2], tokenLine] :
+      m[3] ? ["i", m[3], tokenLine] :
+             ["p", m[4], tokenLine]
+    );
+  }
+
+  let i = 0;
+
+  const pk = () => T[i] || ["e", null, ln];
+
+  const is = (t, v) => {
+    const k = pk();
+    return k[0] === t && k[1] === v;
+  };
+
+  const eat = (t, v) => {
+    const k = pk();
+
+    if ((t && k[0] !== t) ||
+        (v !== undefined && k[1] !== v)) {
+      const at = v === ";" && i > 0 ? T[i - 1][2] : k[2];  /* missing ; belongs to the previous line */
+      throw lineErr(
+        "Line " + at + ": expected " +
+        (v ?? t) + ", got " + (k[1] ?? "end"),
+        at
+      );
+    }
+
+    i++;
+    return k[1];
+  };
+
+  const atom = () => {
+    const k = pk();
+
+    if (k[0] === "n") {
+      i++;
+      return ["num", k[1]];
+    }
+
+    if (k[0] === "i") {
+      i++;
+
+      if (is("p", "[")) {
+        i++;
+        const x = expr();
+        eat("p", "]");
+        return ["idx", k[1], x];
+      }
+
+      return ["var", k[1]];
+    }
+
+    eat("p", "(");
+    const e = expr();
+    eat("p", ")");
+    return e;
+  };
+
+  const term = () => {
+    let l = atom();
+
+    while (is("p", "*") || is("p", "/") || is("p", "%")) {
+      const o = eat("p");
+      l = ["bin", o, l, atom()];
+    }
+
+    return l;
+  };
+
+  const sumE = () => {
+    let l = term();
+
+    while (is("p", "+") || is("p", "-")) {
+      const o = eat("p");
+      l = ["bin", o, l, term()];
+    }
+
+    return l;
+  };
+
+  const shiftE = () => {
+    let l = sumE();
+
+    while (is("p", "<<") || is("p", ">>")) {
+      const o = eat("p");
+      l = ["bin", o, l, sumE()];
+    }
+
+    return l;
+  };
+
+  const expr = () => {
+    let l = shiftE();
+
+    while (is("p", "&")) {
+      eat("p");
+      l = ["bin", "&", l, shiftE()];
+    }
+
+    return l;
+  };
+
+  const stmt = () => {
+    const line = pk()[2];
+
+    if (is("i", "let")) {
+      i++;
+      const n = eat("i");
+      eat("p", "=");
+
+      if (is("i", "array")) {
+        i++;
+        eat("p", "(");
+        const e = expr();
+        eat("p", ")");
+        eat("p", ";");
+        return { t: "alloc", n, e, line };
+      }
+
+      const e = expr();
+      eat("p", ";");
+      return { t: "asg", n, e, line, decl: true };
+    }
+
+    if (is("i", "for")) {
+      i++;
+      const v = eat("i");
+      eat("i", "in");
+
+      const lo = expr();
+      eat("p", "..");
+      const hi = expr();
+      eat("p", "{");
+
+      return { t: "for", v, lo, hi, body: block(), line };
+    }
+
+    if (is("i", "return")) {
+      i++;
+      const e = expr();
+      eat("p", ";");
+      return { t: "ret", e, line };
+    }
+
+    const n = eat("i");
+
+    if (is("p", "[")) {
+      i++;
+      const ix = expr();
+      eat("p", "]");
+      eat("p", "=");
+
+      const e = expr();
+      eat("p", ";");
+
+      return { t: "store", n, ix, e, line };
+    }
+
+    eat("p", "=");
+    const e = expr();
+    eat("p", ";");
+
+    return { t: "asg", n, e, line };
+  };
+
+  const block = () => {
+    const o = [];
+
+    while (!is("p", "}")) {
+      if (pk()[0] === "e") {
+        throw lineErr("Missing } before end of input", pk()[2]);
+      }
+
+      o.push(stmt());
+    }
+
+    eat("p", "}");
+    return o;
+  };
+
+  let bud = null, budTxt = "";
+
+  if (is("p", "@")) {
+    i++;
+    eat("i", "budget");
+    eat("p", "(");
+
+    const n = eat("n");
+    const u = eat("i");
+
+    eat("p", ")");
+
+    budTxt = n + " " + u;
+
+    bud = n * ({
+      pJ: 1,
+      nJ: 1e3,
+      uJ: 1e6,
+      mJ: 1e9
+    }[u] || 1e6);
+  }
+
+  eat("i", "fn");
+  eat("i", "main");
+  eat("p", "(");
+  eat("p", ")");
+  eat("p", "{");
+
+  return { bud, budTxt, body: block() };
+}
+
+/* ---------- Energy analysis ---------- */
+
+const show = e =>
+  e[0] === "num" ? e[1] :
+  e[0] === "var" ? e[1] :
+  e[0] === "idx" ? e[1] + "[" + show(e[2]) + "]" :
+  "(" + show(e[2]) + " " + e[1] + " " + show(e[3]) + ")";
+
+const vars = (e, s = new Set()) => {
+  if (e[0] === "var") s.add(e[1]);
+  else if (e[0] === "idx") vars(e[2], s);
+  else if (e[0] === "bin") {
+    vars(e[2], s);
+    vars(e[3], s);
+  }
+  return s;
+};
+
+const pw = n =>
+  Number.isInteger(n) && n > 1 && (n & (n - 1)) === 0;
+
+const lg = n => 31 - Math.clz32(n);
+
+const assigned = (b, s = new Set()) => {
+  for (const x of b) {
+    if (x.t === "asg") s.add(x.n);
+
+    if (x.t === "for") {
+      s.add(x.v);
+      assigned(x.body, s);
+    }
+  }
+  return s;
+};
+
+const storedArr = (b, s = new Set()) => {
+  for (const x of b) {
+    if (x.t === "store") s.add(x.n);
+    if (x.t === "for") storedArr(x.body, s);
+  }
+  return s;
+};
+
+const loadsIn = (e, o = []) => {
+  if (e[0] === "idx") {
+    o.push(e);
+    loadsIn(e[2], o);
+  } else if (e[0] === "bin") {
+    loadsIn(e[2], o);
+    loadsIn(e[3], o);
+  }
+  return o;
+};
+
+const directLoads = b =>
+  b.flatMap(s =>
+    s.t === "for" ? [] :
+    [s.e, s.ix].filter(Boolean).flatMap(e => loadsIn(e))
+  );
+
+const setNode = (n, v) => n.splice(0, n.length, ...v);
+const cp = x => JSON.parse(JSON.stringify(x));
+let NAMES = new Set();
+const setNames = src => { NAMES = new Set(src.match(/[A-Za-z_]\w*/g) || []); };
+const fresh = p => {
+  let k = 1;
+  while (NAMES.has(p + k)) k++;
+  NAMES.add(p + k);
+  return p + k;
+};
+
+const parentOf = (b, t) => {
+  if (b.includes(t)) return b;
+  for (const x of b) {
+    if (x.t === "for") {
+      const r = parentOf(x.body, t);
+      if (r) return r;
+    }
+  }
+  return null;
+};
+
+const rmDead = (b, a) => {
+  for (let i = b.length - 1; i >= 0; i--) {
+    const x = b[i];
+    if ((x.t === "alloc" || x.t === "store") && x.n === a) b.splice(i, 1);
+    else if (x.t === "for") {
+      rmDead(x.body, a);
+      if (!x.body.length) b.splice(i, 1);
+    }
+  }
+};
+
+const rn = (b, f, t) => {
+  const re = e => {
+    if (e[0] === "var" && e[1] === f) e[1] = t;
+    else if (e[0] === "idx") re(e[2]);
+    else if (e[0] === "bin") { re(e[2]); re(e[3]); }
+  };
+  for (const x of b) {
+    for (const k of ["e", "ix", "lo", "hi"]) if (x[k]) re(x[k]);
+    if (x.t === "for") {
+      if (x.v === f) x.v = t;
+      rn(x.body, f, t);
+    }
+    if (x.n === f) x.n = t;
+  }
+};
+
+const unitIn = (ix, v) => {
+  const isV = x => x[0] === "var" && x[1] === v;
+  return isV(ix) ||
+    (ix[0] === "bin" && ix[1] === "+" &&
+     ((isV(ix[3]) && !vars(ix[2]).has(v)) ||
+      (isV(ix[2]) && !vars(ix[3]).has(v))));
+};
+
+const memFix = (ix, loops) => {
+  if (loops.length < 2) return;
+  const o = loops[loops.length - 2].node, n = loops[loops.length - 1].node;
+  if (o.body.length !== 1 || o.body[0] !== n) return;
+  if (vars(n.lo).has(o.v) || vars(n.hi).has(o.v)) return;
+  if (!unitIn(ix, o.v)) return;
+  return () => {
+    [o.v, n.v] = [n.v, o.v];
+    [o.lo, n.lo] = [n.lo, o.lo];
+    [o.hi, n.hi] = [n.hi, o.hi];
+  };
+};
+
+function analyze(prog) {
+  const E = {}, S = [], sizes = {};
+  const C = { arith: 0, mem: 0, alloc: 0, loop: 0 };
+  const env = Object.create(null);
+  const stl = {}, allocLine = {}, cnt = {};
+  const reads = new Set(), seen = new Set();
+
+  (function c(b) {
+    for (const s of b) {
+      if (s.t === "asg" || s.t === "alloc") {
+        cnt[s.n] = (cnt[s.n] || 0) + 1;
+      }
+
+      if (s.t === "for") {
+        cnt[s.v] = 2;
+        c(s.body);
+      }
+    }
+  })(prog.body);
+
+  const rd = e => {
+    for (const l of loadsIn(e)) reads.add(l[1]);
+  };
+
+  (function w(b) {
+    for (const s of b) {
+      for (const e of [s.e, s.ix, s.lo, s.hi]) {
+        if (e) rd(e);
+      }
+      if (s.t === "for") w(s.body);
+    }
+  })(prog.body);
+
+  const ce = e => {
+    if (e[0] === "num") return e[1];
+    if (e[0] === "var") {
+      return e[1] in env ? env[e[1]] : null;
+    }
+
+    if (e[0] !== "bin") return null;
+
+    const a = ce(e[2]), b = ce(e[3]);
+
+    if (a == null || b == null) return null;
+
+    if (e[1] === "<<") return a * 2 ** b;
+    if (e[1] === ">>") return Math.floor(a / 2 ** b);
+    if (e[1] === "&") return a & b;
+
+    return e[1] === "+" ? a + b :
+           e[1] === "-" ? a - b :
+           e[1] === "*" ? a * b :
+           b ? (e[1] === "/" ? Math.floor(a / b) : a % b) :
+           null;
+  };
+
+  const add = (l, x, c) => {
+    E[l] = (E[l] || 0) + x;
+    C[c] += x;
+  };
+
+  const sug = (line, kind, msg, save, fix) => {
+    if (save >= 1000) S.push({ line, kind, msg, save, fix });
+  };
+
+  const unit = (ix, lv) => {
+    const v = x => x[0] === "var" && lv.has(x[1]);
+
+    return v(ix) ||
+      (ix[0] === "bin" &&
+       (ix[1] === "+" || ix[1] === "-") &&
+       ((v(ix[2]) && ce(ix[3]) != null) ||
+        (ix[1] === "+" && v(ix[3]) && ce(ix[2]) != null)));
+  };
+
+  const memc = (a, ix, lv) =>
+    ce(ix) != null
+      ? M.l1
+      : M.l1 + memPen((sizes[a] || 0) * 4, unit(ix, lv));
+
+  const cs = (e, lv) => {
+    if (e[0] === "idx") {
+      const r = cs(e[2], lv);
+      return [r[0], r[1] + memc(e[1], e[2], lv)];
+    }
+    if (e[0] === "bin") {
+      const l = cs(e[2], lv), r = cs(e[3], lv);
+      return [OC[e[1]] + l[0] + r[0], l[1] + r[1]];
+    }
+    return [0, 0];
+  };
+
+  const cst = (e, lv) => {
+    const r = cs(e, lv);
+    return r[0] + r[1];
+  };
+
+  const inv = (e, L) =>
+    e[0] === "num" ||
+    (e[0] === "var" && !L.as.has(e[1])) ||
+    (e[0] === "bin" && inv(e[2], L) && inv(e[3], L));
+
+  const chk = (a, ix, cx) => {
+    const k = cx.line + a;
+
+    if (memPen((sizes[a] || 0) * 4, false) > memPen((sizes[a] || 0) * 4, true) &&
+        ce(ix) == null &&
+        !unit(ix, cx.lv) &&
+        !seen.has(k)) {
+
+      seen.add(k);
+
+      sug(
+        cx.line,
+        "memory",
+        `${a}[${show(ix)}] jumps around a big array (cache-unfriendly) → walk it in order (swap loops or transpose). Up to`,
+        cx.mult * (memPen((sizes[a] || 0) * 4, false) - memPen((sizes[a] || 0) * 4, true)),
+        memFix(ix, cx.loops)
+      );
+    }
+  };
+
+  const walkE = (e, cx) => {
+    if (e[0] === "idx") {
+      chk(e[1], e[2], cx);
+      return walkE(e[2], cx);
+    }
+
+    if (e[0] !== "bin") return;
+
+    if (!vars(e).size && ce(e) != null) {
+      sug(
+        cx.line,
+        "fold",
+        `${show(e)} is constant → write ${ce(e)} (compiler can pre-compute it)`,
+        cst(e, cx.lv) * cx.mult,
+        (v => v >= 0 ? () => setNode(e, ["num", v]) : undefined)(ce(e))
+      );
+      return;
+    }
+
+    for (const L of cx.loops) {
+      if (inv(e, L)) {
+        sug(
+          cx.line,
+          "hoist",
+          `${show(e)} never changes inside the loop at line ${L.line} → compute it once before the loop`,
+          cst(e, cx.lv) * (cx.mult - L.mult),
+          () => {
+            const nm = fresh("h");
+            const blk = parentOf(prog.body, L.node);
+            blk.splice(blk.indexOf(L.node), 0,
+              { t: "asg", n: nm, e: cp(e), line: L.line, decl: true });
+            setNode(e, ["var", nm]);
+          }
+        );
+        return;
+      }
+    }
+
+    const cl = ce(e[2]), cr = ce(e[3]);
+
+    if (e[1] === "*") {
+      const c = pw(cr) ? cr : pw(cl) ? cl : 0;
+
+      if (c) {
+        sug(
+          cx.line, "strength",
+          `multiply by ${c} → shift left by ${lg(c)}`,
+          (M.mul - M.shift) * cx.mult,
+          () => setNode(e, ["bin", "<<", pw(cr) ? e[2] : e[3], ["num", lg(c)]])
+        );
+      }
+    }
+
+    if (e[1] === "/" && pw(cr)) {
+      sug(
+        cx.line, "strength",
+        `divide by ${cr} → shift right by ${lg(cr)}`,
+        (M.div - M.shift) * cx.mult,
+        () => setNode(e, ["bin", ">>", e[2], ["num", lg(cr)]])
+      );
+    }
+
+    if (e[1] === "%" && pw(cr)) {
+      sug(
+        cx.line, "strength",
+        `remainder by ${cr} → AND with ${cr - 1}`,
+        (M.rem - M.and) * cx.mult,
+        () => setNode(e, ["bin", "&", e[2], ["num", cr - 1]])
+      );
+    }
+
+    walkE(e[2], cx);
+    walkE(e[3], cx);
+  };
+
+  const trips = s => {
+    const a = ce(s.lo), h = ce(s.hi);
+    return a != null && h != null ? Math.max(h - a, 0) : 1000;
+  };
+
+  const visit = (b, mult, lv, loops) =>
+    b.forEach((s, k) => {
+      const cx = { line: s.line, mult, lv, loops };
+
+      if (s.t === "alloc") {
+        const n = ce(s.e) || 0;
+        sizes[s.n] = n;
+        allocLine[s.n] = s.line;
+        add(s.line, n * M.fill * mult, "alloc");
+      }
+
+      else if (s.t === "asg") {
+        const r = cs(s.e, lv);
+        add(s.line, (r[0] + M.mv) * mult, "arith");
+        add(s.line, r[1] * mult, "mem");
+        walkE(s.e, cx);
+
+        if (cnt[s.n] === 1 && ce(s.e) != null) {
+          env[s.n] = ce(s.e);
+        }
+      }
+
+      else if (s.t === "store") {
+        const r1 = cs(s.ix, lv), r2 = cs(s.e, lv);
+        add(s.line, (r1[0] + r2[0]) * mult, "arith");
+        add(s.line, (r1[1] + r2[1] + memc(s.n, s.ix, lv)) * mult, "mem");
+
+        chk(s.n, s.ix, cx);
+        walkE(s.e, cx);
+        walkE(s.ix, cx);
+
+        (stl[s.n] = stl[s.n] || []).push(s.line);
+      }
+
+      else if (s.t === "ret") {
+        const r = cs(s.e, lv);
+        add(s.line, r[0] * mult, "arith");
+        add(s.line, r[1] * mult, "mem");
+        walkE(s.e, cx);
+      }
+
+      else {
+        const tr = trips(s);
+        const as = assigned(s.body).add(s.v);
+        const lv2 = new Set(lv).add(s.v);
+        const st = storedArr(s.body);
+        const g = {};
+
+        add(s.line, M.loop * mult * tr, "loop");
+
+        for (const l of directLoads(s.body)) {
+          const key = J([l[1], l[2]]);
+          (g[key] = g[key] || []).push(l);
+        }
+
+        for (const key in g) {
+          if (g[key].length > 1 &&
+              !st.has(g[key][0][1])) {
+            const l = g[key][0];
+
+            sug(
+              s.body[0].line,
+              "reuse",
+              `${l[1]}[${show(l[2])}] is read ${g[key].length}× per iteration → read once into a variable`,
+              (g[key].length - 1) *
+              memc(l[1], l[2], lv2) * mult * tr,
+              () => {
+                const nm = fresh("r"), l0 = g[key][0];
+                s.body.unshift({ t: "asg", n: nm, e: cp(l0), line: s.line, decl: true });
+                for (const l of g[key]) setNode(l, ["var", nm]);
+              }
+            );
+          }
+        }
+
+        visit(
+          s.body,
+          mult * tr,
+          lv2,
+          [...loops, { line: s.line, mult, as, node: s }]
+        );
+
+        const nx = b[k + 1];
+
+        if (nx && nx.t === "for" &&
+            J(s.lo) === J(nx.lo) &&
+            J(s.hi) === J(nx.hi)) {
+
+          let save = M.loop * mult * tr;
+          let fw = 0;
+
+          for (const x of s.body) {
+            if (x.t === "store" &&
+                J(x.ix) === J(["var", s.v])) {
+
+              const n = directLoads(nx.body).filter(
+                l => l[1] === x.n &&
+                     J(l[2]) === J(["var", nx.v])
+              ).length;
+
+              fw += n * memc(x.n, ["var", nx.v], lv2) * mult * tr;
+            }
+          }
+
+          sug(
+            nx.line,
+            "fuse",
+            `loops at lines ${s.line} and ${nx.line} have the same bounds → fuse into one loop${fw ? " (also stops re-reading the array from memory)" : ""}`,
+            save + fw,
+            () => {
+              if (nx.v !== s.v) rn(nx.body, nx.v, s.v);
+              s.body.push(...nx.body);
+              b.splice(b.indexOf(nx), 1);
+            }
+          );
+        }
+      }
+    });
+
+  visit(prog.body, 1, new Set(), []);
+
+  for (const a in sizes) {
+    if (!reads.has(a) && stl[a]) {
+      sug(
+        allocLine[a],
+        "dead",
+        `array ${a} is written but never read → delete it and its stores`,
+        E[allocLine[a]] +
+        stl[a].reduce((t, l) => t + E[l], 0),
+        () => rmDead(prog.body, a)
+      );
+    }
+  }
+
+  const total = Object.values(E).reduce((a, b) => a + b, 0);
+
+  S.sort((a, b) => b.save - a.save);
+
+  return { E, S, total, C };
+}
+
+/* ---------- Printer, re-analysis and fixes ---------- */
+
+const PREC = { "&": 1, "<<": 2, ">>": 2, "+": 3, "-": 3, "*": 4, "/": 4, "%": 4 };
+
+const pe = (e, p = 0) => {
+  if (e[0] === "num" || e[0] === "var") return String(e[1]);
+  if (e[0] === "idx") return e[1] + "[" + pe(e[2]) + "]";
+  const q = PREC[e[1]];
+  const t = pe(e[2], q) + " " + e[1] + " " + pe(e[3], q + 1);
+  return q < p ? "(" + t + ")" : t;
+};
+
+const ps = (b, d) => b.map(x => {
+  const pad = "  ".repeat(d);
+  if (x.t === "alloc") return `${pad}let ${x.n} = array(${pe(x.e)});\n`;
+  if (x.t === "asg") return `${pad}${x.decl ? "let " : ""}${x.n} = ${pe(x.e)};\n`;
+  if (x.t === "store") return `${pad}${x.n}[${pe(x.ix)}] = ${pe(x.e)};\n`;
+  if (x.t === "ret") return `${pad}return ${pe(x.e)};\n`;
+  return `${pad}for ${x.v} in ${pe(x.lo)}..${pe(x.hi)} {\n${ps(x.body, d + 1)}${pad}}\n`;
+}).join("");
+
+const pr = (p, lead = "") =>
+  lead + (p.bud != null ? `@budget(${p.budTxt})\n` : "") +
+  "fn main() {\n" + ps(p.body, 1) + "}";
+
+function simulate(src) {
+  setNames(src);
+  const p = parse(src);
+  let r = analyze(p);
+
+  for (let n = 0; n < 25; n++) {
+    const sg = r.S.find(x => x.fix);
+    if (!sg) break;
+    try { sg.fix(); } catch (e) { break; }
+    r = analyze(p);
+  }
+
+  return r.total;
+}
+
+function preview(src, i) {
+  setNames(src);
+  const p = parse(src);
+  const r = analyze(p);
+  const sg = r.S[i];
+
+  if (!sg || !sg.fix) return null;
+
+  const A = pr(p).split("\n");
+  try { sg.fix(); } catch (e) { return null; }
+  const B = pr(p).split("\n");
+
+  let a = 0, z = 0;
+  while (a < A.length && a < B.length && A[a] === B[a]) a++;
+  while (z < A.length - a && z < B.length - a &&
+         A[A.length - 1 - z] === B[B.length - 1 - z]) z++;
+
+  return {
+    del: A.slice(a, A.length - z),
+    add: B.slice(a, B.length - z),
+    real: r.total - analyze(p).total
+  };
+}
+
+/* ---------- Dashboard UI ---------- */
+
+const $ = id => document.getElementById(id);
+const ta = $("code");
+
+/* Syntax mode for the EcoLens mini-language */
+const KW = new Set(["let", "fn", "for", "in", "return"]);
+if (window.CodeMirror) {
+  CodeMirror.defineMode("eco", () => ({
+    startState: () => ({ fn: false }),
+    token(stream, st) {
+      if (stream.eatSpace()) return null;
+      if (stream.match("//")) { stream.skipToEnd(); return "comment"; }
+      if (stream.match(/^@\w+/)) return "meta";
+      if (stream.match(/^\d+/)) return "number";
+      if (stream.match(/^[A-Za-z_]\w*/)) {
+        const w = stream.current();
+        if (st.fn) { st.fn = false; return "def"; }
+        if (w === "fn") { st.fn = true; return "keyword"; }
+        return KW.has(w) ? "keyword" : w === "array" ? "builtin" : "variable";
+      }
+      if (stream.match(/^(\.\.|<<|>>)/) || stream.match(/^[-+*\/%=&]/)) return "operator";
+      stream.next();
+      return null;
+    },
+    lineComment: "//"
+  }));
+}
+
+const cm = window.CodeMirror
+  ? CodeMirror.fromTextArea(ta, {
+      mode: "eco",
+      theme: "eco",
+      lineNumbers: true,
+      tabSize: 2,
+      indentUnit: 2,
+      viewportMargin: 50,
+      extraKeys: { Tab: false, "Shift-Tab": false }   /* keep keyboard focus movement */
+    })
+  : null;
+
+/* The rest of the app reads/writes code.value; this works with or without CodeMirror. */
+const code = {
+  get value() { return cm ? cm.getValue() : ta.value; },
+  set value(v) {
+    if (!cm) { ta.value = v; return; }
+    const cur = cm.getCursor(), sc = cm.getScrollInfo();
+    cm.setValue(v);
+    cm.setCursor(cur);
+    cm.scrollTo(sc.left, sc.top);
+  }
+};
+
+/* Debounced re-analysis: wait for a pause in typing */
+let tmr = 0;
+function runSoon() { clearTimeout(tmr); tmr = setTimeout(run, 250); }
+
+if (cm) {
+  cm.getInputField().setAttribute("aria-label", "Source code editor");
+  cm.on("change", (_, c) => { if (c.origin !== "setValue") runSoon(); });
+  if (window.ResizeObserver) new ResizeObserver(() => cm.refresh()).observe(cm.getWrapperElement());
+} else {
+  ta.addEventListener("input", runSoon);
+}
+
+/* Line marks: hot lines and errors */
+let marked = [], errWidget = null;
+
+function mark(n, where, cls) {
+  marked.push([cm.addLineClass(n - 1, where, cls), where, cls]);
+}
+
+function clearMarks() {
+  if (!cm) return;
+  cm.operation(() => {
+    marked.forEach(([h, w, c]) => cm.removeLineClass(h, w, c));
+    marked = [];
+    if (errWidget) { errWidget.clear(); errWidget = null; }
+  });
+}
+
+function paintHot(E, total, count) {
+  if (!cm) return;
+  cm.operation(() => {
+    clearMarks();
+    for (let n = 1; n <= count; n++) {
+      if ((E[n] || 0) / Math.max(total, 1) > .15) {
+        mark(n, "background", "cm-hot");
+        mark(n, "gutter", "cm-hot-gutter");
+      }
+    }
+  });
+}
+
+function showError(e) {
+  if (!cm) return;
+  cm.operation(() => {
+    clearMarks();
+    if (!e.line) return;
+    const n = Math.min(Math.max(e.line, 1), cm.lineCount());
+    mark(n, "background", "cm-err");
+    mark(n, "gutter", "cm-err-gutter");
+    const w = document.createElement("div");
+    w.className = "eco-errline";
+    w.textContent = "⚠ " + e.message;
+    errWidget = cm.addLineWidget(n - 1, w);
+  });
+}
+
+/* Jump from the energy map / suggestions to a line in the editor */
+function goLine(n) {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!cm) {
+    const ls = ta.value.split("\n");
+    n = Math.min(Math.max(n, 1), ls.length);
+    let a = 0;
+    for (let i = 0; i < n - 1; i++) a += ls[i].length + 1;
+    ta.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+    ta.focus({ preventScroll: true });
+    ta.setSelectionRange(a, a + ls[n - 1].length);
+    return;
+  }
+  n = Math.min(Math.max(n, 1), cm.lineCount());
+  cm.getWrapperElement().scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  cm.setCursor({ line: n - 1, ch: 0 });
+  cm.scrollIntoView({ line: n - 1, ch: 0 }, 70);
+  const h = cm.addLineClass(n - 1, "background", "cm-flash");
+  setTimeout(() => cm.removeLineClass(h, "background", "cm-flash"), 2000);
+}
+
+const jump = e => {
+  const t = e.target.closest("[data-line]");
+  if (t) goLine(+t.dataset.line);
+};
+$("out").addEventListener("click", jump);
+$("out").addEventListener("keydown", e => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-line][tabindex]")) {
+    e.preventDefault();
+    jump(e);
+  }
+});
+
+const esc = s => String(s).replace(/[&<>]/g, c => ({
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;"
+})[c]);
+
+const u = x => (x / 1e6).toFixed(3);
+
+let runs = 1e9;
+let LAST_ANALYSIS = null;
+const off = new Set();
+let sortBy = "savings", hist = [], busy = false, pend = null, CUR = null;
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const lead = () => (code.value.match(/^(?:\s*\/\/[^\n]*\n)*/) || [""])[0];
+
+function tween(el, from, to, ms) {
+  if (!el) return;
+  el.classList.add("flash");
+  const t0 = performance.now();
+  (function f(t) {
+    const k = Math.min(1, (t - t0) / ms);
+    el.textContent = u(from + (to - from) * (1 - Math.pow(1 - k, 3))) + " µJ";
+    if (k < 1) requestAnimationFrame(f);
+    else el.classList.remove("flash");
+  })(t0);
+}
+
+function toggleKind(k) { off.has(k) ? off.delete(k) : off.add(k); run(); }
+function toggleSort() { sortBy = sortBy === "line" ? "savings" : "line"; run(); }
+
+function applyOne(i) {
+  const sg = CUR && CUR.S[i];
+  if (busy || !sg || !sg.fix) return;
+  hist.push(code.value);
+  const L = lead();
+  try { sg.fix(); } catch (e) { hist.pop(); return; }
+  pend = CUR.total;
+  code.value = pr(CUR.prog, L);
+  run();
+}
+
+function undo() {
+  if (busy || !hist.length) return;
+  pend = CUR ? CUR.total : null;
+  code.value = hist.pop();
+  run();
+}
+
+async function applyAll() {
+  if (busy) return;
+  busy = true;
+  hist.push(code.value);
+  run();
+
+  try {
+    for (let n = 0; n < 25; n++) {
+      const L = lead();
+      setNames(code.value);
+      setNames(code.value);
+    const prog = parse(code.value);
+      const r = analyze(prog);
+      const sg = r.S.find(x => x.fix);
+      if (!sg) break;
+      sg.fix();
+      code.value = pr(prog, L);
+      pend = r.total;
+      run();
+      await sleep(750);
+    }
+  } catch (e) { /* stop on error */ }
+
+  busy = false;
+  run();
+}
+
+function ex(n) {
+  hist = [];
+  code.value = exampleSource(n);
+  if (cm) { cm.clearHistory(); cm.scrollTo(0, 0); }
+  run();
+}
+
+function run() {
+  clearTimeout(tmr);
+  const out = $("out");
+
+  if (!PROFILE) {                       // no measured profile -> no analysis (we refuse to guess)
+    LAST_ANALYSIS = null;
+    out.innerHTML = noProfileCard();
+    return;
+  }
+
+  try {
+    const prog = parse(code.value);
+    const { E, S, total, C } = analyze(prog);
+    const lines = code.value.split("\n");
+    const mx = Math.max(...Object.values(E), 1);
+
+    const src = code.value;
+    const after = Math.min(total, simulate(src));
+    const pot = total - after;
+
+    S.forEach((x, i) => { x.i = i; x.pv = preview(src, i); });
+    setNames(src);
+    CUR = { prog, S, total };
+    paintHot(E, total, lines.length);
+
+    const Jday = pot * 1e-12 * runs;
+
+    let h = `
+      <section class="card">
+        <div class="section-heading">
+          <div class="section-icon">📊</div>
+          <h2>Analysis overview</h2>
+        </div>
+        <p class="muted">Energy from a static count of the operations in your code, priced with costs measured on this machine. The saving is found by applying every fix in sequence and re-analyzing, so overlapping fixes are not double-counted. Use <b>Measure on hardware</b> below to run the real program.</p>
+
+        <div class="hero">
+          <span>Energy per run</span>
+          <b id="heroNum">${u(total)} µJ</b>
+        </div>
+
+        <div class="k small">
+          <div class="g">
+            <span>Potential saving</span>
+            <b>${(100 * pot / Math.max(total, 1)).toFixed(0)}%</b>
+          </div>
+
+          <div>
+            <span>After fixes (calibrated model)</span>
+            <b>${u(after)} µJ</b>
+          </div>
+
+          ${prog.bud != null ? (() => {
+            const pct = 100 * total / Math.max(prog.bud, 1);
+            const over = total > prog.bud;
+            return `
+            <div>
+              <span>Energy budget · ${u(prog.bud)} µJ</span>
+              <div class="track ${over ? "over" : ""}"
+                role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                aria-valuenow="${Math.min(pct, 999).toFixed(0)}">
+                <i style="width:${Math.min(pct, 100)}%"></i>
+              </div>
+              <div class="budget-note ${over ? "over-note" : ""}">
+                ${pct.toFixed(0)}% used ·
+                ${
+                  !over ? "Within budget" :
+                  after <= prog.bud ? "Within after fixes" :
+                  "Over budget"
+                }
+              </div>
+            </div>`;
+          })() : ""}
+        </div>
+
+        <div class="ba">
+          <div class="ba-row">
+            <span class="lbl">Current</span>
+            <div class="ba-bar"><i class="now" style="width:100%"></i></div>
+            <span class="val">${u(total)} µJ</span>
+          </div>
+          <div class="ba-row">
+            <span class="lbl">After fixes</span>
+            <div class="ba-bar">
+              <i class="aft" style="width:${Math.max(0, 100 * after / Math.max(total, 1))}%"></i>
+            </div>
+            <span class="val">${u(after)} µJ</span>
+          </div>
+        </div>
+      </section>
+    `;
+
+    const cats = [
+      ["Arithmetic", C.arith, "var(--c1)"],
+      ["Memory access", C.mem, "var(--c2)"],
+      ["Allocation", C.alloc, "var(--c3)"],
+      ["Loop overhead", C.loop, "var(--c4)"]
+    ];
+    const ct = Math.max(cats.reduce((t, c) => t + c[1], 0), 1);
+    let acc = 0;
+    const stops = cats.map(c => {
+      const from = acc;
+      acc += 100 * c[1] / ct;
+      return `${c[2]} ${from}% ${acc}%`;
+    }).join(", ");
+
+    h += `
+      <section class="card">
+        <div class="section-heading">
+          <div class="section-icon">🍩</div>
+          <h2>Where the energy goes</h2>
+        </div>
+        <p class="muted">Energy split by operation type across the whole run.</p>
+
+        <div class="break">
+          <div class="donut" style="background:conic-gradient(${stops})"
+            role="img" aria-label="Energy breakdown by category">
+            <div><b>${u(total)}</b><small>µJ total</small></div>
+          </div>
+
+          <div class="legend">
+            ${cats.map(c => `
+              <div class="lg-row">
+                <i style="background:${c[2]}"></i>
+                <span>${c[0]}</span>
+                <span>${u(c[1])} µJ</span>
+                <span class="pc">${(100 * c[1] / ct).toFixed(0)}%</span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </section>
+    `;
+
+    h += `
+      <section class="card">
+        <div class="section-heading">
+          <div class="section-icon">🔥</div>
+          <h2>Energy map</h2>
+        </div>
+
+        <p class="muted">
+          Orange highlights indicate lines estimated to consume
+          a large share of the total. Click a row to jump to that line in the editor.
+        </p>
+
+        <div class="map">
+          ${lines.map((t, i) => {
+            const e = E[i + 1] || 0;
+            const hot = e / Math.max(total, 1) > .15;
+
+            return `
+              <div class="r ${hot ? "h" : e ? "" : "z"}" data-line="${i + 1}"${e ? ' role="button" tabindex="0"' : ""}>
+                <span>${i + 1}</span>
+                <span>
+                  ${e ? `<i style="width:${Math.max(3, 100 * e / mx)}%"></i>` : ""}
+                </span>
+                <span>${e ? u(e) : ""}</span>
+                <span>${esc(t) || " "}</span>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </section>
+    `;
+
+    const lineRows = lines.map((text, idx) => ({
+      line: idx + 1,
+      text,
+      cost: E[idx + 1] || 0
+    })).filter(row => row.cost > 0).sort((a, b) => b.cost - a.cost).slice(0, 8);
+
+    h += `
+      <section class="card">
+        <div class="section-heading">
+          <div class="section-icon">🔎</div>
+          <h2>Why does this code cost more?</h2>
+        </div>
+        <p class="muted">Select a cost-bearing line to inspect it in the editor. The line values are attributed by the current static cost model, not measured on a processor.</p>
+        ${lineRows.length ? lineRows.map(row => `
+          <div class="eco-line-cost">
+            <span class="tag">L${row.line}</span>
+            <button type="button" data-line="${row.line}" tabindex="0" title="Jump to line ${row.line}">
+              ${esc(row.text.trim() || "(blank line)")}
+              <div class="eco-track"><i style="width:${Math.max(2, 100 * row.cost / Math.max(...lineRows.map(x => x.cost), 1))}%"></i></div>
+            </button>
+            <strong>${u(row.cost)} µJ</strong>
+          </div>
+        `).join("") : `<p class="eco-muted">No cost-bearing source lines were identified.</p>`}
+        <div class="eco-callout"><strong>How to interpret this:</strong> Each line is priced with the per-operation energies measured by the backend on this machine (table below). Line attribution is a static analysis; the whole-program figure can be checked with <b>Measure on hardware</b>.</div>
+      </section>
+
+      ${profileCard()}
+    `;
+
+    LAST_ANALYSIS = {
+      timestamp: new Date().toISOString(),
+      source: src,
+      estimatedEnergyMicroJoules: total,
+      estimatedAfterFixesMicroJoules: after,
+      estimatedPotentialSavingsMicroJoules: pot,
+      estimatedPotentialSavingsPercent: 100 * pot / Math.max(total, 1),
+      budgetMicroJoules: prog.bud == null ? null : prog.bud,
+      categoryBreakdownMicroJoules: { ...C },
+      lineCostsMicroJoules: Object.fromEntries(Object.entries(E).map(([k, v]) => [k, v])),
+      modelWeights: { ...M, operationCosts: { ...OC } },
+      hardwareProfile: { cpu: PROFILE.host.cpu, created: PROFILE.created, energySource: PROFILE.energy_source,
+                         powerAssumedW: PROFILE.power_assumed_w },
+      measured: LAST_MEASURE && LAST_MEASURE.src === src && LAST_MEASURE.data ? LAST_MEASURE.data : null,
+      note: "Per-operation costs were measured on the hardware profile above; program totals are a static analysis priced with them. Fields named estimated* come from that model, 'measured' (if present) from running the program."
+    };
+
+    const kinds = [...new Set(S.map(x => x.kind))];
+    const nfix = S.filter(x => x.fix).length;
+    const vis = S.filter(x => !off.has(x.kind))
+      .map(x => ({ ...x, val: x.pv ? x.pv.real : x.save }))
+      .sort(sortBy === "line" ? (p, q) => p.line - q.line : (p, q) => q.val - p.val);
+
+    const dl = (arr, cls, sg) => arr.length
+      ? `<pre class="d ${cls}">${arr.slice(0, 8).map(x => esc(sg + " " + x)).join("\n")}${arr.length > 8 ? "\n…" : ""}</pre>`
+      : "";
+
+    h += `
+      ${measureCard(src, total, after)}
+
+      <section class="card">
+        <div class="section-heading">
+          <div class="section-icon">📉</div>
+          <h2>Before-and-after (calibrated model)</h2>
+        </div>
+        <p class="muted">Static analysis priced with this machine's measured costs. The card above runs the actual programs.</p>
+        <div class="eco-extra-grid">
+          <div class="eco-mini"><h3>Current (model)</h3><strong>${u(total)} µJ</strong><div class="eco-muted">Before applying suggested fixes</div></div>
+          <div class="eco-mini"><h3>After fixes (model)</h3><strong>${u(after)} µJ</strong><div class="eco-muted">If all fixes were applied in sequence</div></div>
+        </div>
+        <div class="eco-callout"><strong>Potential reduction:</strong> ${u(pot)} µJ (${(100 * pot / Math.max(total, 1)).toFixed(1)}%). Individual fixes may interact; confirm the combined saving with Measure on hardware.</div>
+      </section>
+
+      <section class="card">
+        <div class="section-heading">
+          <div class="section-icon">🌱</div>
+          <h2>Optimization suggestions</h2>
+        </div>
+
+        <p class="muted">
+          Each saving is measured by applying that fix alone and re-analyzing.
+          Fixes that rewrite code have an Apply button. Click a suggestion to see its line in the editor. Risk labels are conservative review prompts, not formal proofs of equivalence. Verify language semantics and test outputs before relying on a rewrite.
+        </p>
+
+        <div class="actions">
+          <button class="primary" onclick="applyAll()" ${nfix && !busy ? "" : "disabled"}>⚡ Apply all (${nfix})</button>
+          <button class="secondary" onclick="undo()" ${hist.length && !busy ? "" : "disabled"}>↶ Undo</button>
+        </div>
+
+        <div class="chips">
+          ${kinds.map(k => `
+            <button class="chip" aria-pressed="${!off.has(k)}"
+              onclick="toggleKind('${k}')">${k} · ${S.filter(x => x.kind === k).length}</button>
+          `).join("")}
+          ${S.length ? `<button class="chip sortb" onclick="toggleSort()">Sort: ${sortBy === "line" ? "line order" : "savings"}</button>` : ""}
+        </div>
+
+        ${
+          vis.map(x => `
+            <div class="sg">
+              <div class="sg-head">
+                <div class="jump" data-line="${x.line}" role="button" tabindex="0" title="Show line ${x.line} in the editor">
+                  <span class="tag">${esc(x.kind)}</span>
+                  <strong>Line ${x.line}:</strong>
+                  ${esc(x.msg)}
+                  <b>saves ~${u(x.val)} µJ</b>
+                  <span class="eco-risk">${(x.kind === "shift" || x.kind === "bitwise") ? "CONDITIONAL" : (x.kind === "dead" ? "REVIEW FIRST" : "REVIEW REQUIRED")}</span>
+                </div>
+                ${x.fix && !busy ? `<button class="apply" onclick="applyOne(${x.i})">Apply fix</button>` : ""}
+              </div>
+              ${x.pv ? dl(x.pv.del, "del", "−") + dl(x.pv.add, "add", "+") : ""}
+            </div>
+          `).join("") ||
+          (S.length ? "No suggestions match the selected filters."
+                    : "✅ No optimization suggestions found for this input.")
+        }
+      </section>
+    `;
+
+    h += `
+      <section class="card">
+        <div class="section-heading">
+          <div class="section-icon">🌍</div>
+          <h2>Potential real-world impact</h2>
+        </div>
+
+        <p class="muted">
+          Estimate how repeated use of optimized code could affect
+          energy consumption.
+        </p>
+
+        <div class="impact">
+          If this program runs
+          <input id="runsInput" type="number" min="0"
+            step="1000" value="${runs}">
+          times per day,
+          estimated savings are approximately
+          <b id="dailyJ">${Jday.toFixed(1)} J/day</b>
+          and
+          <b id="annualCO2">${
+            (Jday * 365 * 400 / 3.6e6).toFixed(3)
+          } g CO₂/year</b>.
+        </div>
+
+        <p class="muted">
+          Assumes a grid intensity of 400 g CO₂/kWh.
+          Actual environmental impact depends on hardware,
+          electricity source, and real execution behavior.
+        </p>
+      </section>
+    `;
+
+    out.innerHTML = h;
+
+    if (pend != null) {
+      tween($("heroNum"), pend, total, 600);
+      pend = null;
+    }
+
+    const runsInput = $("runsInput");
+
+    runsInput.addEventListener("change", () => {
+      const value = Number(runsInput.value);
+
+      if (!Number.isFinite(value) || value < 0) {
+        runsInput.value = runs;
+        return;
+      }
+
+      runs = value;
+
+      $("dailyJ").textContent =
+        (pot * 1e-12 * runs).toFixed(1) + " J/day";
+
+      $("annualCO2").textContent =
+        (pot * 1e-12 * runs * 365 * 400 / 3.6e6)
+        .toFixed(3) + " g CO₂/year";
+    });
+
+  } catch (e) {
+    LAST_ANALYSIS = null;
+    showError(e);
+    out.innerHTML = `
+      <section class="card err">
+        <h3>⚠️ Unable to analyze code</h3>
+        ${esc(e.message)}
+        <p>Check the syntax and try again.</p>
+      </section>
+    `;
+  }
+}
+
+function syncOperationCosts() {
+  OC["+"] = M.alu;
+  OC["-"] = M.alu;
+  OC["*"] = M.mul;
+  OC["/"] = M.div;
+  OC["%"] = M.rem;
+  OC["<<"] = M.shift;
+  OC[">>"] = M.shift;
+  OC["&"] = M.and;
+}
+
+const REQUIRED_WEIGHTS = ["alu", "and", "shift", "mul", "div", "rem", "mv", "l1", "loop", "dram", "fill"];
+
+function applyProfile(p) {
+  for (const k of REQUIRED_WEIGHTS) {
+    if (!Number.isFinite(p.weights_pj[k])) throw new Error("profile is missing weight '" + k + "'");
+  }
+  if (!Array.isArray(p.memory_curve) || p.memory_curve.length < 2) throw new Error("profile has no memory curve");
+  for (const k of Object.keys(M)) delete M[k];
+  Object.assign(M, p.weights_pj);
+  PROFILE = p;
+  syncOperationCosts();
+  const cpu = (p.host.cpu || "this machine").replace(/\(R\)|\(TM\)|CPU|Processor/g, "").replace(/\s+/g, " ").trim();
+  const src = p.energy_source === "rapl" ? "RAPL energy counter" : `time × ${p.power_assumed_w} W (assumed)`;
+  $("srcPill").textContent = `Measured · ${cpu} · ${src}`;
+}
+
+async function loadProfile() {
+  try {
+    const r = await fetch(API + "/api/profile", { cache: "no-store" });
+    if (r.status === 404) { PROFILE = null; PROFILE_ERR = ""; return false; }
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    applyProfile(await r.json());
+    PROFILE_ERR = "";
+    return true;
+  } catch (e) {
+    PROFILE = null;
+    PROFILE_ERR = e.message;
+    $("srcPill").textContent = "No hardware profile";
+    return false;
+  }
+}
+
+function noProfileCard() {
+  if (PROFILE_ERR) {
+    return `
+      <section class="card err">
+        <h3>⚠️ Cannot reach the EcoLens backend</h3>
+        <p>${esc(PROFILE_ERR)}</p>
+        <p>Start it from the project folder:</p>
+        <pre>pip install -r requirements.txt
+python -m uvicorn backend.app:app --port 8000</pre>
+        <p>then open <b>http://localhost:8000</b>. If the page is hosted elsewhere, set
+        <code>window.ECOLENS_API = "http://localhost:8000"</code> before the script and start the backend with
+        <code>ECOLENS_CORS=&lt;your page origin&gt;</code>.</p>
+        <button class="primary" type="button" onclick="boot()">Retry</button>
+      </section>`;
+  }
+  return `
+    <section class="card">
+      <div class="section-heading"><div class="section-icon">🔬</div><h2>Calibrate EcoLens on this machine</h2></div>
+      <p class="muted">EcoLens no longer uses guessed weights. Before it can analyse code it must measure what each
+      operation costs on your hardware (adds, multiplies, divides, shifts, cache hits and misses). It takes a few minutes.</p>
+      <div class="eco-callout">For real joules on Linux, start the backend with <code>sudo</code> so it can read the CPU's RAPL counters.
+      Without a counter, energy = measured time × the CPU power you enter below (ratios between operations are still measured).</div>
+      <div class="actions" style="margin-top:12px;gap:10px;align-items:center;flex-wrap:wrap">
+        <label class="eco-muted">CPU power if no RAPL (W)
+          <input id="calWatts" type="number" min="1" max="500" step="1" placeholder="e.g. 15" style="width:90px;margin-left:6px"></label>
+        <button class="primary" type="button" onclick="startCalibration(false)">Calibrate (full, ~3 min)</button>
+        <button class="secondary" type="button" onclick="startCalibration(true)">Quick (~30 s, noisier)</button>
+      </div>
+      <div class="eco-bar"><i id="calBar"></i></div>
+      <p class="eco-muted" id="calMsg"></p>
+    </section>`;
+}
+
+async function startCalibration(quick) {
+  const w = Number(($("calWatts") || {}).value);
+  const body = { quick, watts: Number.isFinite(w) && w > 0 ? w : null };
+  const msg = $("calMsg");
+  try {
+    const r = await fetch(API + "/api/calibrate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (!r.ok && r.status !== 409) throw new Error((await r.json()).detail || "HTTP " + r.status);
+    for (;;) {
+      await sleep(1000);
+      const st = await (await fetch(API + "/api/calibrate/status", { cache: "no-store" })).json();
+      if ($("calBar")) $("calBar").style.width = Math.round(100 * st.progress) + "%";
+      if (msg) msg.textContent = st.message;
+      if (st.state === "error") throw new Error(st.error);
+      if (st.state === "done") break;
+    }
+    await loadProfile();
+    ex("demo");
+  } catch (e) {
+    if (msg) msg.textContent = "Calibration failed: " + e.message;
+  }
+}
+
+function profileCard() {
+  const p = PROFILE, w = p.weights_pj, sd = p.weights_sd_pj || {};
+  const names = [["alu", "Add / subtract"], ["and", "Bitwise and"], ["shift", "Shift"], ["mul", "Multiply"],
+    ["div", "Divide"], ["rem", "Modulo"], ["mv", "Register move"], ["l1", "L1 load"], ["loop", "Loop iteration"],
+    ["dram", "Random access, largest buffer"], ["fill", "Streaming access, largest buffer"]];
+  const ratio = k => (w[k] / Math.max(w.alu, 1e-9)).toFixed(1) + "×";
+  const rows = names.map(([k, l]) => `<tr><td>${l}</td><td class="n">${w[k].toFixed(1)} pJ</td>
+      <td class="n">± ${(sd[k] || 0).toFixed(1)}</td><td class="n">${ratio(k)}</td><td class="eco-muted">${esc((p.provenance || {})[k] || "")}</td></tr>`).join("");
+  const q = p.quality || {}, warns = (q.warnings || []).map(x => `<div class="eco-callout">⚠️ ${esc(x)}</div>`).join("");
+  const rapl = p.energy_source === "rapl";
+  return `
+    <section class="card">
+      <div class="section-heading"><div class="section-icon">⚙️</div><h2>Measured hardware profile</h2></div>
+      <p class="muted">${esc(p.host.cpu)} · ${esc(p.host.os)} · calibrated ${esc(p.created.slice(0, 10))}
+        <span class="eco-badge ${rapl ? "ok" : "warn"}">${rapl ? "RAPL energy counter" : "time × " + p.power_assumed_w + " W (assumed)"}</span></p>
+      <table class="eco-table"><thead><tr><th>Operation</th><th class="n">Energy</th><th class="n">Spread</th><th class="n">vs add</th><th>How it was measured</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+      ${warns}
+      <p class="eco-muted">Memory: per-access penalty is interpolated from ${p.memory_curve.length} measured buffer sizes
+        (${(p.memory_curve[0].bytes / 1024) | 0} KB → ${(p.memory_curve[p.memory_curve.length - 1].bytes / 1048576) | 0} MB).
+        These values are read-only: change them by re-calibrating, not by typing.</p>
+      <div class="actions" style="margin-top:12px"><button class="secondary" type="button" onclick="PROFILE=null;run()">Re-calibrate…</button></div>
+    </section>`;
+}
+
+/* Example budgets were tuned for the old guessed weights. Re-base them on this machine's numbers
+   (same budget/total ratio as the original examples) so the demos still show over/under budget. */
+const EX_BUDGET_FRACTION = { demo: 0.15, stride: 0.75 };
+function exampleSource(n) {
+  let src = EX[n];
+  if (!PROFILE || !EX_BUDGET_FRACTION[n]) return src;
+  try {
+    setNames(src);
+    const t = analyze(parse(src)).total;
+    const uj = t * EX_BUDGET_FRACTION[n] / 1e6;
+    const mag = Math.pow(10, Math.floor(Math.log10(uj)) - 1);
+    const val = Math.max(1, Math.round(uj / mag) * mag);
+    src = src.replace(/@budget\([^)]*\)/, `@budget(${val} uJ)`);
+  } catch (e) { /* keep original text */ }
+  return src;
+}
+
+/* ---------- real measurement through the backend ---------- */
+
+function fixedProgram(src) {              // same loop as simulate(), but returns the rewritten program
+  setNames(src);
+  const p = parse(src);
+  let r = analyze(p);
+  for (let n = 0; n < 25; n++) {
+    const sg = r.S.find(x => x.fix);
+    if (!sg) break;
+    try { sg.fix(); } catch (e) { break; }
+    r = analyze(p);
+  }
+  return { prog: p, total: r.total };
+}
+
+async function measureOnHardware() {
+  const src = code.value;
+  let before, after, mBefore, mAfter;
+  try {
+    setNames(src);
+    const p0 = parse(src);
+    mBefore = analyze(p0).total;
+    before = { body: cp(p0.body) };
+    const f = fixedProgram(src);
+    after = { body: cp(f.prog.body) };
+    mAfter = f.total;
+  } catch (e) { LAST_MEASURE = { src, state: "error", error: e.message }; run(); return; }
+
+  LAST_MEASURE = { src, state: "running", mBefore, mAfter };
+  run();
+  try {
+    const r = await fetch(API + "/api/measure", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ before, after, reps: 5, target_seconds: 0.4 }) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || "HTTP " + r.status);
+    LAST_MEASURE = { src, state: "done", mBefore, mAfter, data: d };
+  } catch (e) {
+    LAST_MEASURE = { src, state: "error", error: e.message };
+  }
+  if (code.value === src) run();
+}
+
+function measureCard(src, total, after) {
+  const m = LAST_MEASURE && LAST_MEASURE.src === src ? LAST_MEASURE : null;
+  const head = `<div class="section-heading"><div class="section-icon">⚡</div><h2>Measure on hardware</h2></div>`;
+  const btn = `<div class="actions" style="margin-top:12px"><button class="primary" type="button" onclick="measureOnHardware()">▶ Measure on this machine</button></div>`;
+  if (!m) return `<section class="card">${head}
+      <p class="muted">Compiles your program (before and after all fixes) to C, runs both on this machine for about
+      two seconds each, and reads the energy used. No model involved.</p>${btn}</section>`;
+  if (m.state === "running") return `<section class="card">${head}<p class="muted">Measuring… compiling and running both versions (about 10 s).</p></section>`;
+  if (m.state === "error") return `<section class="card err">${head}<p>${esc(m.error)}</p>${btn}</section>`;
+  const d = m.data, b = d.before, a = d.after;
+  const rapl = d.energy_source === "rapl";
+  const row = (label, meas, mod) => `<tr><td>${label}</td><td class="n"><b>${u(meas.energy_pj)} µJ</b>
+      <span class="eco-muted">(${u(meas.energy_pj_min)}–${u(meas.energy_pj_max)})</span></td>
+      <td class="n">${u(mod)} µJ</td><td class="n">${(mod / meas.energy_pj).toFixed(2)}×</td></tr>`;
+  const pct = x => x.toFixed(1) + "%";
+  const modelSave = 100 * (m.mBefore - m.mAfter) / Math.max(m.mBefore, 1);
+  return `<section class="card">${head}
+    <p class="muted">Real runs of the compiled program on this machine
+      <span class="eco-badge ${rapl ? "ok" : "warn"}">${rapl ? "RAPL energy counter" : "time × " + d.power_assumed_w + " W (assumed)"}</span>
+      <span class="eco-badge">${esc(d.flags)} · ${d.reps} runs, median</span></p>
+    <table class="eco-table"><thead><tr><th></th><th class="n">Measured (min–max)</th><th class="n">Model</th><th class="n">Model ÷ measured</th></tr></thead><tbody>
+      ${row("Your code", b, m.mBefore)}
+      ${a ? row("After all fixes", a, m.mAfter) : ""}
+    </tbody></table>
+    ${a ? `<div class="eco-callout"><strong>Measured saving: ${pct(d.saving_percent)}</strong> (${u(d.saving_pj)} µJ per run).
+      The model predicted ${pct(modelSave)}.
+      ${d.same_result ? "Both versions return the same value ✓" : "<b>⚠️ The two versions return different values — review the rewrite before using it.</b>"}</div>` : ""}
+    <p class="eco-muted">Compiled at -O0 so the machine code mirrors your source (an optimising compiler would already make many of these
+      fixes itself). Includes whole-package energy for the run time, so idle power is part of the figure.
+      ${b.cv > 0.1 ? "<b>High run-to-run variation (" + (100 * b.cv).toFixed(0) + "%) — close other programs and measure again.</b>" : ""}</p>
+    ${btn}</section>`;
+}
+
+function exportAnalysis() {
+  if (!LAST_ANALYSIS) {
+    alert("Run a successful analysis before exporting.");
+    return;
+  }
+  const blob = new Blob([JSON.stringify(LAST_ANALYSIS, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ecolens-analysis.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function exportReviewReport() {
+  if (!LAST_ANALYSIS) {
+    alert("Run a successful analysis before exporting the review report.");
+    return;
+  }
+  const a = LAST_ANALYSIS;
+  const fmt = n => Number(n || 0).toLocaleString(undefined, { maximumFractionDigits: 3 });
+  const rows = Object.entries(a.categoryBreakdownMicroJoules || {})
+    .map(([k,v]) => `<tr><td>${esc(k)}</td><td>${fmt(v)} µJ</td></tr>`).join("");
+  const lines = Object.entries(a.lineCostsMicroJoules || {})
+    .sort((x,y) => y[1]-x[1]).slice(0,8)
+    .map(([line,v]) => `<tr><td>Line ${esc(line)}</td><td>${fmt(v)} µJ</td></tr>`).join("");
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>EcoLens Review Report</title>
+  <style>body{font:15px/1.55 system-ui,sans-serif;max-width:900px;margin:40px auto;padding:0 22px;color:#17212b}h1{color:#14764e}h2{margin-top:28px}table{border-collapse:collapse;width:100%;margin:12px 0}td,th{border:1px solid #ccd5d9;padding:9px;text-align:left}pre{white-space:pre-wrap;background:#f3f6f5;padding:14px;border-radius:8px;overflow-wrap:anywhere}.note{padding:12px;background:#edf7f1;border-radius:8px}@media print{body{margin:0;max-width:none}}</style></head><body>
+  <h1>EcoLens · Green Code Analyzer</h1><p>Review 2 analysis snapshot · ${esc(a.timestamp)}</p>
+  <h2>Summary</h2><table><tr><th>Metric</th><th>Estimate</th></tr>
+  <tr><td>Current estimated energy</td><td>${fmt(a.estimatedEnergyMicroJoules)} µJ</td></tr>
+  <tr><td>Potential estimated energy after fixes</td><td>${fmt(a.estimatedAfterFixesMicroJoules)} µJ</td></tr>
+  <tr><td>Potential savings</td><td>${fmt(a.estimatedPotentialSavingsMicroJoules)} µJ (${fmt(a.estimatedPotentialSavingsPercent)}%)</td></tr>
+  <tr><td>Budget</td><td>${a.budgetMicroJoules == null ? "Not specified" : fmt(a.budgetMicroJoules)+" µJ"}</td></tr></table>
+  <h2>Category breakdown</h2><table><tr><th>Category</th><th>Estimated cost</th></tr>${rows || "<tr><td colspan='2'>No category data</td></tr>"}</table>
+  <h2>Top source-line costs</h2><table><tr><th>Source line</th><th>Estimated cost</th></tr>${lines || "<tr><td colspan='2'>No line costs available</td></tr>"}</table>
+  <h2>Source code snapshot</h2><pre>${esc(a.source || "")}</pre>
+  <h2>Model weights</h2><pre>${esc(JSON.stringify(a.modelWeights || {},null,2))}</pre>
+  <p class="note"><strong>Important limitation:</strong> Per-operation costs were measured on the hardware profile in the analysis JSON; program totals marked estimated are a static analysis priced with those costs, not a run of the program. Rewritten code should be validated for semantic equivalence.</p>
+  <p>Generated by EcoLens.</p></body></html>`;
+  const blob = new Blob([html], {type:"text/html;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url; link.download = "EcoLens-Review2-Report.html";
+  document.body.appendChild(link); link.click(); link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function runTestSuite() {
+  if (!PROFILE) { alert("Load the hardware profile first (start the backend and calibrate)."); return; }
+  const cases = [
+    {
+      name: "Hardware profile has every weight and a monotone memory curve",
+      run: () => REQUIRED_WEIGHTS.every(k => Number.isFinite(M[k]) && M[k] >= 0) &&
+                 memPen(1 << 28, false) >= memPen(1 << 20, false) && memPen(1 << 12, true) === 0
+    },
+    {
+      name: "AST sent to the backend survives a JSON round-trip",
+      run: () => { const p = parse(EX.demo); return JSON.stringify(JSON.parse(JSON.stringify(p.body))) === JSON.stringify(p.body); }
+    },
+    {
+      name: "Built-in Demo parses and analyzes",
+      run: () => {
+        const p = parse(EX.demo);
+        const r = analyze(p);
+        return Number.isFinite(r.total) && r.total > 0;
+      }
+    },
+    {
+      name: "Stride example parses and analyzes",
+      run: () => {
+        const p = parse(EX.stride);
+        const r = analyze(p);
+        return Number.isFinite(r.total) && r.total > 0;
+      }
+    },
+    {
+      name: "Malformed source is rejected",
+      run: () => {
+        try { parse("fn main() { let x = ; return x; }"); return false; }
+        catch (_) { return true; }
+      }
+    },
+    {
+      name: "Operation weights affect estimates",
+      run: () => {
+        const p = parse("fn main() { let x = 8 * 4; return x; }");
+        const before = analyze(p).total;
+        const old = M.mul;
+        M.mul = old + 123;
+        syncOperationCosts();
+        const after = analyze(p).total;
+        M.mul = old;
+        syncOperationCosts();
+        return after > before;
+      }
+    },
+    {
+      name: "Budget annotation is parsed",
+      run: () => parse("@budget(60 uJ) fn main() { let x = 1; return x; }").bud === 60000000
+    },
+    {
+      name: "Empty source is rejected",
+      run: () => { try { parse(""); return false; } catch (_) { return true; } }
+    },
+    {
+      name: "Repeated analysis is deterministic",
+      run: () => {
+        const p = parse(EX.demo);
+        const first = analyze(p).total;
+        const second = analyze(p).total;
+        return first === second;
+      }
+    },
+    {
+      name: "Invalid budget syntax is rejected",
+      run: () => { try { parse("@budget(nope) fn main() { return 1; }"); return false; } catch (_) { return true; } }
+    }
+  ];
+
+  const results = cases.map(test => {
+    try { return { name: test.name, pass: !!test.run(), error: "" }; }
+    catch (e) { return { name: test.name, pass: false, error: e.message }; }
+  });
+  const passed = results.filter(r => r.pass).length;
+  let panel = document.getElementById("testResults");
+  if (!panel) {
+    panel = document.createElement("section");
+    panel.id = "testResults";
+    panel.className = "card";
+    $("out").prepend(panel);
+  }
+  panel.innerHTML = `
+    <div class="section-heading"><div class="section-icon">🧪</div><h2>EcoLens self-test results</h2></div>
+    <p class="muted">${passed} of ${results.length} checks passed. These are lightweight prototype checks, not a comprehensive verification suite.</p>
+    ${results.map(r => `
+      <div class="eco-test-row">
+        <span class="eco-status ${r.pass ? "eco-pass" : "eco-fail"}">${r.pass ? "PASS" : "FAIL"}</span>
+        <div><strong>${esc(r.name)}</strong>${r.error ? `<div class="eco-muted">${esc(r.error)}</div>` : ""}</div>
+      </div>
+    `).join("")}
+  `;
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function paintToggle() {
+  const dark = document.documentElement.dataset.theme === "dark";
+  const b = $("themeBtn");
+  b.textContent = dark ? "☀️" : "🌙";
+  b.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+  b.title = b.getAttribute("aria-label");
+  document.querySelector('meta[name="theme-color"]')
+    .setAttribute("content", dark ? "#08131f" : "#138052");
+}
+
+function toggleTheme() {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem("eco-theme", next); } catch (e) {}
+  paintToggle();
+}
+
+paintToggle();
+
+/* Fetch the measured profile from the backend, then load the demo. */
+async function boot() {
+  await loadProfile();
+  ex("demo");
+}
+boot();
+</script>
+
+</main>
+</body>
+</html>

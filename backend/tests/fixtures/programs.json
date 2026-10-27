@@ -1,0 +1,709 @@
+{
+ "demo": {
+  "src": "// Two loops over a 256 KB array\n@budget(60 uJ)\nfn main() {\n  let w = 3;\n  w = w + 4;\n  let a = array(65536);\n  let b = array(65536);\n  let s = 0;\n\n  for i in 0..65536 {\n    let k = w * 5 + 7;\n    a[i] = i * 8 + k;\n  }\n\n  for j in 0..65536 {\n    s = s + a[j] / 4 + a[j] % 8;\n    b[j] = a[j] * 10;\n  }\n\n  return s;\n}",
+  "before": {
+   "bud": 60000000,
+   "body": [
+    {
+     "t": "asg",
+     "n": "w",
+     "e": [
+      "num",
+      3
+     ],
+     "line": 4,
+     "decl": true
+    },
+    {
+     "t": "asg",
+     "n": "w",
+     "e": [
+      "bin",
+      "+",
+      [
+       "var",
+       "w"
+      ],
+      [
+       "num",
+       4
+      ]
+     ],
+     "line": 5
+    },
+    {
+     "t": "alloc",
+     "n": "a",
+     "e": [
+      "num",
+      65536
+     ],
+     "line": 6
+    },
+    {
+     "t": "alloc",
+     "n": "b",
+     "e": [
+      "num",
+      65536
+     ],
+     "line": 7
+    },
+    {
+     "t": "asg",
+     "n": "s",
+     "e": [
+      "num",
+      0
+     ],
+     "line": 8,
+     "decl": true
+    },
+    {
+     "t": "for",
+     "v": "i",
+     "lo": [
+      "num",
+      0
+     ],
+     "hi": [
+      "num",
+      65536
+     ],
+     "body": [
+      {
+       "t": "asg",
+       "n": "k",
+       "e": [
+        "bin",
+        "+",
+        [
+         "bin",
+         "*",
+         [
+          "var",
+          "w"
+         ],
+         [
+          "num",
+          5
+         ]
+        ],
+        [
+         "num",
+         7
+        ]
+       ],
+       "line": 11,
+       "decl": true
+      },
+      {
+       "t": "store",
+       "n": "a",
+       "ix": [
+        "var",
+        "i"
+       ],
+       "e": [
+        "bin",
+        "+",
+        [
+         "bin",
+         "*",
+         [
+          "var",
+          "i"
+         ],
+         [
+          "num",
+          8
+         ]
+        ],
+        [
+         "var",
+         "k"
+        ]
+       ],
+       "line": 12
+      }
+     ],
+     "line": 10
+    },
+    {
+     "t": "for",
+     "v": "j",
+     "lo": [
+      "num",
+      0
+     ],
+     "hi": [
+      "num",
+      65536
+     ],
+     "body": [
+      {
+       "t": "asg",
+       "n": "s",
+       "e": [
+        "bin",
+        "+",
+        [
+         "bin",
+         "+",
+         [
+          "var",
+          "s"
+         ],
+         [
+          "bin",
+          "/",
+          [
+           "idx",
+           "a",
+           [
+            "var",
+            "j"
+           ]
+          ],
+          [
+           "num",
+           4
+          ]
+         ]
+        ],
+        [
+         "bin",
+         "%",
+         [
+          "idx",
+          "a",
+          [
+           "var",
+           "j"
+          ]
+         ],
+         [
+          "num",
+          8
+         ]
+        ]
+       ],
+       "line": 16
+      },
+      {
+       "t": "store",
+       "n": "b",
+       "ix": [
+        "var",
+        "j"
+       ],
+       "e": [
+        "bin",
+        "*",
+        [
+         "idx",
+         "a",
+         [
+          "var",
+          "j"
+         ]
+        ],
+        [
+         "num",
+         10
+        ]
+       ],
+       "line": 17
+      }
+     ],
+     "line": 15
+    },
+    {
+     "t": "ret",
+     "e": [
+      "var",
+      "s"
+     ],
+     "line": 20
+    }
+   ]
+  },
+  "after": {
+   "bud": 60000000,
+   "body": [
+    {
+     "t": "asg",
+     "n": "w",
+     "e": [
+      "num",
+      3
+     ],
+     "line": 4,
+     "decl": true
+    },
+    {
+     "t": "asg",
+     "n": "w",
+     "e": [
+      "bin",
+      "+",
+      [
+       "var",
+       "w"
+      ],
+      [
+       "num",
+       4
+      ]
+     ],
+     "line": 5
+    },
+    {
+     "t": "alloc",
+     "n": "a",
+     "e": [
+      "num",
+      65536
+     ],
+     "line": 6
+    },
+    {
+     "t": "asg",
+     "n": "s",
+     "e": [
+      "num",
+      0
+     ],
+     "line": 8,
+     "decl": true
+    },
+    {
+     "t": "asg",
+     "n": "h1",
+     "e": [
+      "bin",
+      "+",
+      [
+       "bin",
+       "*",
+       [
+        "var",
+        "w"
+       ],
+       [
+        "num",
+        5
+       ]
+      ],
+      [
+       "num",
+       7
+      ]
+     ],
+     "line": 10,
+     "decl": true
+    },
+    {
+     "t": "for",
+     "v": "i",
+     "lo": [
+      "num",
+      0
+     ],
+     "hi": [
+      "num",
+      65536
+     ],
+     "body": [
+      {
+       "t": "asg",
+       "n": "k",
+       "e": [
+        "var",
+        "h1"
+       ],
+       "line": 11,
+       "decl": true
+      },
+      {
+       "t": "store",
+       "n": "a",
+       "ix": [
+        "var",
+        "i"
+       ],
+       "e": [
+        "bin",
+        "+",
+        [
+         "bin",
+         "<<",
+         [
+          "var",
+          "i"
+         ],
+         [
+          "num",
+          3
+         ]
+        ],
+        [
+         "var",
+         "k"
+        ]
+       ],
+       "line": 12
+      },
+      {
+       "t": "asg",
+       "n": "s",
+       "e": [
+        "bin",
+        "+",
+        [
+         "bin",
+         "+",
+         [
+          "var",
+          "s"
+         ],
+         [
+          "bin",
+          ">>",
+          [
+           "idx",
+           "a",
+           [
+            "var",
+            "i"
+           ]
+          ],
+          [
+           "num",
+           2
+          ]
+         ]
+        ],
+        [
+         "bin",
+         "&",
+         [
+          "idx",
+          "a",
+          [
+           "var",
+           "i"
+          ]
+         ],
+         [
+          "num",
+          7
+         ]
+        ]
+       ],
+       "line": 16
+      }
+     ],
+     "line": 10
+    },
+    {
+     "t": "ret",
+     "e": [
+      "var",
+      "s"
+     ],
+     "line": 20
+    }
+   ]
+  },
+  "model_before": 415826050,
+  "model_after": 165806490,
+  "nsug": 7
+ },
+ "stride": {
+  "src": "// Column walk: jumps around memory\n@budget(450 uJ)\nfn main() {\n  let a = array(262144);\n\n  for i in 0..262144 {\n    a[i] = i % 8;\n  }\n\n  let s = 0;\n\n  for r in 0..64 {\n    for c in 0..256 {\n      s = s + a[c * 1024 + r];\n    }\n  }\n\n  return s;\n}",
+  "before": {
+   "bud": 450000000,
+   "body": [
+    {
+     "t": "alloc",
+     "n": "a",
+     "e": [
+      "num",
+      262144
+     ],
+     "line": 4
+    },
+    {
+     "t": "for",
+     "v": "i",
+     "lo": [
+      "num",
+      0
+     ],
+     "hi": [
+      "num",
+      262144
+     ],
+     "body": [
+      {
+       "t": "store",
+       "n": "a",
+       "ix": [
+        "var",
+        "i"
+       ],
+       "e": [
+        "bin",
+        "%",
+        [
+         "var",
+         "i"
+        ],
+        [
+         "num",
+         8
+        ]
+       ],
+       "line": 7
+      }
+     ],
+     "line": 6
+    },
+    {
+     "t": "asg",
+     "n": "s",
+     "e": [
+      "num",
+      0
+     ],
+     "line": 10,
+     "decl": true
+    },
+    {
+     "t": "for",
+     "v": "r",
+     "lo": [
+      "num",
+      0
+     ],
+     "hi": [
+      "num",
+      64
+     ],
+     "body": [
+      {
+       "t": "for",
+       "v": "c",
+       "lo": [
+        "num",
+        0
+       ],
+       "hi": [
+        "num",
+        256
+       ],
+       "body": [
+        {
+         "t": "asg",
+         "n": "s",
+         "e": [
+          "bin",
+          "+",
+          [
+           "var",
+           "s"
+          ],
+          [
+           "idx",
+           "a",
+           [
+            "bin",
+            "+",
+            [
+             "bin",
+             "*",
+             [
+              "var",
+              "c"
+             ],
+             [
+              "num",
+              1024
+             ]
+            ],
+            [
+             "var",
+             "r"
+            ]
+           ]
+          ]
+         ],
+         "line": 14
+        }
+       ],
+       "line": 13
+      }
+     ],
+     "line": 12
+    },
+    {
+     "t": "ret",
+     "e": [
+      "var",
+      "s"
+     ],
+     "line": 18
+    }
+   ]
+  },
+  "after": {
+   "bud": 450000000,
+   "body": [
+    {
+     "t": "alloc",
+     "n": "a",
+     "e": [
+      "num",
+      262144
+     ],
+     "line": 4
+    },
+    {
+     "t": "for",
+     "v": "i",
+     "lo": [
+      "num",
+      0
+     ],
+     "hi": [
+      "num",
+      262144
+     ],
+     "body": [
+      {
+       "t": "store",
+       "n": "a",
+       "ix": [
+        "var",
+        "i"
+       ],
+       "e": [
+        "bin",
+        "&",
+        [
+         "var",
+         "i"
+        ],
+        [
+         "num",
+         7
+        ]
+       ],
+       "line": 7
+      }
+     ],
+     "line": 6
+    },
+    {
+     "t": "asg",
+     "n": "s",
+     "e": [
+      "num",
+      0
+     ],
+     "line": 10,
+     "decl": true
+    },
+    {
+     "t": "for",
+     "v": "c",
+     "lo": [
+      "num",
+      0
+     ],
+     "hi": [
+      "num",
+      256
+     ],
+     "body": [
+      {
+       "t": "asg",
+       "n": "h1",
+       "e": [
+        "bin",
+        "<<",
+        [
+         "var",
+         "c"
+        ],
+        [
+         "num",
+         10
+        ]
+       ],
+       "line": 13,
+       "decl": true
+      },
+      {
+       "t": "for",
+       "v": "r",
+       "lo": [
+        "num",
+        0
+       ],
+       "hi": [
+        "num",
+        64
+       ],
+       "body": [
+        {
+         "t": "asg",
+         "n": "s",
+         "e": [
+          "bin",
+          "+",
+          [
+           "var",
+           "s"
+          ],
+          [
+           "idx",
+           "a",
+           [
+            "bin",
+            "+",
+            [
+             "var",
+             "h1"
+            ],
+            [
+             "var",
+             "r"
+            ]
+           ]
+          ]
+         ],
+         "line": 14
+        }
+       ],
+       "line": 13
+      }
+     ],
+     "line": 12
+    },
+    {
+     "t": "ret",
+     "e": [
+      "var",
+      "s"
+     ],
+     "line": 18
+    }
+   ]
+  },
+  "model_before": 617358100,
+  "model_after": 396712980,
+  "nsug": 3
+ }
+}

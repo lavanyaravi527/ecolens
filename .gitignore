@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+# machine-specific measurements and compiled binaries: every user calibrates their own
+data/*
+!data/.gitkeep
